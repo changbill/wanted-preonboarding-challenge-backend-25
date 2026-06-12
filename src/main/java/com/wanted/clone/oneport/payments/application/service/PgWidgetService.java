@@ -2,7 +2,7 @@ package com.wanted.clone.oneport.payments.application.service;
 
 import com.wanted.clone.oneport.payments.application.port.out.pg.PgWidget;
 import com.wanted.clone.oneport.payments.application.service.dto.PaymentRequest;
-import com.wanted.clone.oneport.payments.presentation.port.in.PgWidgetUseCase;
+import com.wanted.clone.oneport.payments.application.port.in.PgWidgetUseCase;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

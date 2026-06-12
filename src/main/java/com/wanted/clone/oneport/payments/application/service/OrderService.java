@@ -1,19 +1,14 @@
 package com.wanted.clone.oneport.payments.application.service;
 
+import com.wanted.clone.oneport.payments.application.command.CreateOrderCommand;
+import com.wanted.clone.oneport.payments.application.port.in.CreateNewOrderUseCase;
+import com.wanted.clone.oneport.payments.application.port.in.GetOrderInfoUseCase;
 import com.wanted.clone.oneport.payments.application.port.out.repository.OrderRepository;
 import com.wanted.clone.oneport.payments.domain.entity.order.Order;
-import com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.order.JpaOrderItemsRepository;
-import com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.order.JpaOrderRepository;
-import com.wanted.clone.oneport.payments.presentation.port.in.CreateNewOrderUseCase;
-import com.wanted.clone.oneport.payments.presentation.port.in.GetOrderInfoUseCase;
-import com.wanted.clone.oneport.payments.presentation.web.request.order.PurchaseOrder;
-import com.wanted.clone.oneport.payments.presentation.web.request.order.ReqNewOrder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +18,8 @@ public class OrderService implements CreateNewOrderUseCase, GetOrderInfoUseCase 
 
     @Transactional
     @Override
-    public Order createOrder(ReqNewOrder newOrder) throws Exception {
-        return orderRepository.save(newOrder.toEntity());
+    public Order createOrder(CreateOrderCommand command) throws Exception {
+        return orderRepository.save(command.toEntity());
     }
 
     @Override

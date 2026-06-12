@@ -2,11 +2,11 @@
 
 ## 1단계: 아키텍처 경계 정리
 
-- [ ] `presentation.port.in`을 `application.port.in`으로 이동
-- [ ] 입력 포트 메서드가 웹 DTO 대신 application command/result 타입을 사용하도록 변경
-- [ ] 출력 포트 `PaymentAPIs`가 Toss DTO 대신 application result 타입을 반환하도록 변경
-- [ ] `PgCorp`를 presentation 패키지 밖으로 이동
-- [ ] 도메인에서 Toss response 타입 참조 제거
+- [x] `presentation.port.in`을 `application.port.in`으로 이동
+- [x] 입력 포트 메서드가 웹 DTO 대신 application command/result 타입을 사용하도록 변경
+- [x] 출력 포트 `PaymentAPIs`가 Toss DTO 대신 application result 타입을 반환하도록 변경
+- [x] `PgCorp`를 presentation 패키지 밖으로 이동
+- [x] 도메인에서 Toss response 타입 참조 제거
 
 ## 2단계: PG adapter 선택 방식 개선
 
@@ -78,9 +78,3 @@
 - [ ] 상태 전이 도메인 테스트 추가
 - [ ] ArchUnit 의존 규칙 강화
 - [ ] REST Docs/OpenAPI 생성 테스트 정리
-
-## 9단계: 문서 갱신
-
-- [ ] README 실행 방법과 디렉터리 구조 갱신
-- [ ] SPEC 현재 구현 갱신
-- [ ] 완료 단계별 `.codex/blog_write/` 기록 작성

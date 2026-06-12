@@ -1,17 +1,16 @@
 package com.wanted.clone.oneport.payments.application.service;
 
+import com.wanted.clone.oneport.payments.application.command.ApprovePaymentCommand;
+import com.wanted.clone.oneport.payments.application.port.in.PaymentFullfillUseCase;
 import com.wanted.clone.oneport.payments.application.port.out.pg.PaymentAPIs;
 import com.wanted.clone.oneport.payments.application.port.out.repository.OrderRepository;
 import com.wanted.clone.oneport.payments.application.port.out.repository.PaymentLedgerRepository;
 import com.wanted.clone.oneport.payments.application.port.out.repository.TransactionTypeRepository;
-import com.wanted.clone.oneport.payments.application.service.dto.PaymentApproveResponse;
+import com.wanted.clone.oneport.payments.application.result.PaymentApprovalResult;
 import com.wanted.clone.oneport.payments.domain.entity.order.Order;
 import com.wanted.clone.oneport.payments.domain.entity.order.OrderStatus;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentLedger;
-import com.wanted.clone.oneport.payments.infrastructure.pg.toss.response.TossApproveResponseMessage;
-import com.wanted.clone.oneport.payments.presentation.port.in.PaymentFullfillUseCase;
-import com.wanted.clone.oneport.payments.presentation.web.request.payment.PgCorp;
-import com.wanted.clone.oneport.payments.presentation.web.request.payment.ReqPaymentApprove;
+import com.wanted.clone.oneport.payments.domain.entity.payment.PgCorp;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -50,17 +49,16 @@ public class PaymentService implements PaymentFullfillUseCase {
 
     @Transactional
     @Override
-    public String paymentApproved(ReqPaymentApprove requestMessage) throws IOException {
-        String orderId = requestMessage.getOrderId();
+    public String paymentApproved(ApprovePaymentCommand command) throws IOException {
+        String orderId = command.getOrderId();
         verifyOrderIsCompleted(orderId);
-//        final PaymentAPIs paymentAPIs = selectPgAPI(requestMessage.getSelectedPgCorp());
-        paymentAPIs = selectPgAPI(requestMessage.getSelectedPgCorp());
-        PaymentApproveResponse response = paymentAPIs.requestPaymentApprove(requestMessage);
+        paymentAPIs = selectPgAPI(command.getSelectedPgCorp());
+        PaymentApprovalResult response = paymentAPIs.requestPaymentApprove(command);
 
         if (paymentAPIs.isPaymentApproved(response.getStatus().name())) {
             Order completedOrder = orderRepository.findById(orderId);
             completedOrder.orderPaymentFullFill(response.getTransactionId());
-            paymentLedgerRepository.save(response.toEntity(requestMessage.getSelectedPgCorp()));
+            paymentLedgerRepository.save(response.toEntity(command.getSelectedPgCorp()));
 
             return "success";
         }

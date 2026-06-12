@@ -1,12 +1,12 @@
 package com.wanted.clone.oneport.payments.application.service;
 
+import com.wanted.clone.oneport.payments.application.command.CancelPaymentCommand;
+import com.wanted.clone.oneport.payments.application.port.in.OrderCancelUseCase;
 import com.wanted.clone.oneport.payments.application.port.out.pg.PaymentAPIs;
 import com.wanted.clone.oneport.payments.application.port.out.repository.PaymentLedgerRepository;
+import com.wanted.clone.oneport.payments.application.result.PaymentCancelResult;
 import com.wanted.clone.oneport.payments.domain.entity.order.Order;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentLedger;
-import com.wanted.clone.oneport.payments.infrastructure.pg.toss.response.TossCancelResponseMessage;
-import com.wanted.clone.oneport.payments.presentation.port.in.OrderCancelUseCase;
-import com.wanted.clone.oneport.payments.presentation.web.request.order.ReqCancelOrder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,20 +22,20 @@ public class CancelService implements OrderCancelUseCase {
 
     @Transactional
     @Override
-    public boolean orderCancel(ReqCancelOrder reqCancelOrder) throws Exception {
-        String paymentKey = reqCancelOrder.getPaymentKey();
-        int cancellationAmount = reqCancelOrder.getCancellationAmount();
-        Order wantedCancelOrder = orderService.getOrderInfo(reqCancelOrder.getOrderId());
+    public boolean orderCancel(CancelPaymentCommand command) throws Exception {
+        String paymentKey = command.getPaymentKey();
+        int cancellationAmount = command.getCancellationAmount();
+        Order wantedCancelOrder = orderService.getOrderInfo(command.getOrderId());
         PaymentLedger paymentInfo = paymentService.getLatestPaymentInfoOnlyOne(paymentKey);
         PaymentAPIs paymentAPIs = paymentService.selectPgAPI(paymentInfo.getPgCorpName());
 
         if (wantedCancelOrder.isNotOrderStatusPurchaseDecision() &&
                 paymentInfo.isCancellableAmountGreaterThan(cancellationAmount)) {
-            if (reqCancelOrder.hasItemIdx())
-                wantedCancelOrder.orderCancel(reqCancelOrder.getItemIdxs());
+            if (command.hasItemIdx())
+                wantedCancelOrder.orderCancel(command.getItemIdxs());
             else
                 wantedCancelOrder.orderAllCancel();
-            TossCancelResponseMessage response = paymentAPIs.requestPaymentCancel(paymentKey, reqCancelOrder);
+            PaymentCancelResult response = paymentAPIs.requestPaymentCancel(paymentKey, command);
             paymentLedgerRepository.save(response.toEntity());
             return true;
         }

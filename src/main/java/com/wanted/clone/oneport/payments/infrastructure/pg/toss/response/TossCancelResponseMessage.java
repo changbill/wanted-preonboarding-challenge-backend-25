@@ -1,7 +1,7 @@
 package com.wanted.clone.oneport.payments.infrastructure.pg.toss.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentLedger;
+import com.wanted.clone.oneport.payments.application.result.PaymentCancelResult;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentMethod;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentStatus;
 import com.wanted.clone.oneport.payments.infrastructure.pg.toss.response.payment.Cancel;
@@ -103,13 +103,13 @@ public class TossCancelResponseMessage extends TossCommonResponseMessage {
             .reduce(0, Integer::sum);
     }
 
-    public PaymentLedger toEntity() {
+    public PaymentCancelResult toCommonMessage() {
         int canceledTotalAmount = calculateCanceledTotalAmount();
 
-        return PaymentLedger.builder()
+        return PaymentCancelResult.builder()
             .transactionId(super.getPaymentKey())
             .method(PaymentMethod.fromMethodName(super.getMethod()))
-            .paymentStatus(PaymentStatus.valueOf(super.getStatus()))
+            .status(PaymentStatus.valueOf(super.getStatus()))
             .totalAmount(super.getTotalAmount())
             .balanceAmount(super.getBalanceAmount())
             .canceledAmount(canceledTotalAmount)

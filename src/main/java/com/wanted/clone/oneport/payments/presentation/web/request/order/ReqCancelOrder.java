@@ -2,6 +2,7 @@ package com.wanted.clone.oneport.payments.presentation.web.request.order;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.wanted.clone.oneport.payments.application.command.CancelPaymentCommand;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,5 +20,9 @@ public class ReqCancelOrder {
 
     public boolean hasItemIdx(){
         return this.getItemIdxs() != null && this.getItemIdxs().length > 0;
+    }
+
+    public CancelPaymentCommand toCommand() {
+        return new CancelPaymentCommand(orderId, itemIdxs, cancelReason, paymentKey, cancellationAmount);
     }
 }

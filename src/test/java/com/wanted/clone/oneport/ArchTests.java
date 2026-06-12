@@ -49,9 +49,9 @@ public class ArchTests {
     @Test
     public void interface_mustHaveInterfaceAnnotation_thenTrue() {
         JavaClasses classes = new ClassFileImporter().importPackages("com.wanted.clone.oneport");
-        ArchRule rule = classes().that().resideInAPackage("..presentation.port.in")
+        ArchRule rule = classes().that().resideInAPackage("..application.port.in")
                 .should().beInterfaces()
-                .andShould().onlyBeAccessed().byClassesThat().resideInAnyPackage("..presentation.web");
+                .andShould().onlyBeAccessed().byClassesThat().resideInAnyPackage("..presentation.web", "..application.service");
         rule.check(classes);
     }
 

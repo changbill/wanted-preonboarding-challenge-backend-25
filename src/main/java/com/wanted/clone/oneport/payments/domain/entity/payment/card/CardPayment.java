@@ -1,7 +1,6 @@
 package com.wanted.clone.oneport.payments.domain.entity.payment.card;
 
 import com.wanted.clone.oneport.payments.domain.entity.payment.TransactionType;
-import com.wanted.clone.oneport.payments.infrastructure.pg.toss.response.TossApproveResponseMessage;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,14 +38,18 @@ public class CardPayment extends TransactionType {
     protected CardPayment() {
     }
 
-    public static CardPayment from(TossApproveResponseMessage response) {
+    public static CardPayment from(String paymentKey,
+                                   String cardNumber,
+                                   String approveNo,
+                                   String acquireStatus,
+                                   String acquirerCode) {
         return CardPayment.builder()
-                .paymentKey(response.getPaymentKey())
-                .cardNumber(response.getCard().getNumber())
-                .approveNo(response.getCard().getApproveNo())
-                .acquireStatus(AcquireStatus.valueOf(response.getCard().getAcquireStatus()))
-                .acquirerCode(response.getCard().getAcquirerCode())
-                .acquirerStatus(response.getCard().getAcquireStatus())
+                .paymentKey(paymentKey)
+                .cardNumber(cardNumber)
+                .approveNo(approveNo)
+                .acquireStatus(AcquireStatus.valueOf(acquireStatus))
+                .acquirerCode(acquirerCode)
+                .acquirerStatus(acquireStatus)
                 .build();
     }
 }

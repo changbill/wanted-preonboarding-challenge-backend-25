@@ -1,10 +1,9 @@
-package com.wanted.clone.oneport.payments.presentation.web.request.payment;
+package com.wanted.clone.oneport.payments.domain.entity.payment;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 @Getter
@@ -21,5 +20,4 @@ public enum PgCorp {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Invalid code: " + code));
     }
-
 }
