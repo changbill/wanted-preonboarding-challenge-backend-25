@@ -3,7 +3,6 @@ package com.wanted.clone.oneport.payments.domain.entity.payment;
 import com.wanted.clone.oneport.payments.domain.entity.payment.converter.PaymentMethodConverter;
 import com.wanted.clone.oneport.payments.domain.entity.payment.converter.PaymentStatusConverter;
 import com.wanted.clone.oneport.payments.domain.entity.payment.converter.PgCorpConverter;
-import com.wanted.clone.oneport.payments.presentation.web.request.payment.PgCorp;
 import jakarta.persistence.*;
 import lombok.*;
 

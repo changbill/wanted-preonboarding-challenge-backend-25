@@ -1,7 +1,7 @@
 package com.wanted.clone.oneport.payments.infrastructure.pg.toss.request;
 
+import com.wanted.clone.oneport.payments.application.command.ApprovePaymentCommand;
 import com.wanted.clone.oneport.payments.infrastructure.pg.CommonApproveMessage;
-import com.wanted.clone.oneport.payments.presentation.web.request.payment.ReqPaymentApprove;
 import lombok.*;
 
 @Getter
@@ -27,7 +27,7 @@ public class TossApproveMessage extends CommonApproveMessage {
                 "]";
     }
 
-    public static TossApproveMessage from(ReqPaymentApprove requestMessage) {
+    public static TossApproveMessage from(ApprovePaymentCommand requestMessage) {
         return TossApproveMessage.builder()
                 .paymentKey(requestMessage.getPaymentKey())
                 .orderId(requestMessage.getOrderId())

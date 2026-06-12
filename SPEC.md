@@ -48,6 +48,8 @@ com.wanted.clone.oneport
 
 ### 입력 포트
 
+입력 포트는 `payments.application.port.in`에 있다. 웹 요청 DTO는 컨트롤러에서 application command로 변환한 뒤 입력 포트로 전달한다.
+
 - `CreateNewOrderUseCase`
 - `GetOrderInfoUseCase`
 - `PgWidgetUseCase`
@@ -59,13 +61,15 @@ com.wanted.clone.oneport
 ### 애플리케이션 서비스
 
 - `OrderService`
-  - `ReqNewOrder`를 `Order` entity로 변환해 저장한다.
+  - `CreateOrderCommand`를 `Order` entity로 변환해 저장한다.
   - 주문 ID로 주문을 조회한다.
 - `PaymentService`
+  - `ApprovePaymentCommand`로 결제 승인을 처리한다.
   - 선택된 PG adapter로 결제 승인을 요청한다.
   - 승인 성공 시 주문 상태를 결제 완료로 변경하고 결제 원장을 저장한다.
   - 결제 원장에서 최신 결제 정보를 조회한다.
 - `CancelService`
+  - `CancelPaymentCommand`로 결제 취소를 처리한다.
   - 주문과 결제 원장을 조회한다.
   - 취소 가능 금액과 주문 상태를 확인한다.
   - PG 취소 API 호출 후 취소 원장을 저장한다.
@@ -75,7 +79,7 @@ com.wanted.clone.oneport
 ### 출력 포트
 
 - PG 연동
-  - `PaymentAPIs`
+  - `PaymentAPIs`: application command를 받아 application result를 반환한다.
   - `PgWidget`
 - 저장소
   - `OrderRepository`
@@ -96,6 +100,7 @@ com.wanted.clone.oneport
   - `PaymentLedger`
   - `PaymentMethod`
   - `PaymentStatus`
+  - `PgCorp`
   - `TransactionType`
   - `CardPayment`
   - 카드/결제 enum converter
@@ -136,8 +141,7 @@ com.wanted.clone.oneport
 
 ## 알려진 제한
 
-- 결제 포트가 웹 DTO와 Toss DTO에 직접 의존한다.
-- 도메인 모델 일부가 웹/Toss 타입에 직접 의존한다.
+- 입력 adapter의 웹 요청 DTO가 application command로 변환되는 책임을 가진다.
 - Toss secret key와 base URL이 코드/설정에 하드코딩되어 있다.
 - 결제 승인/취소 핵심 흐름 테스트가 부족하다.
 - `create_schema.sql`과 JPA entity 매핑의 ID 타입/PK 구조가 일치하지 않을 가능성이 있다.

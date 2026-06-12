@@ -1,9 +1,8 @@
 package com.wanted.clone.oneport.payments.presentation.web;
 
-import com.wanted.clone.oneport.payments.application.service.PaymentService;
 import com.wanted.clone.oneport.payments.application.service.dto.PaymentRequest;
-import com.wanted.clone.oneport.payments.presentation.port.in.*;
-import com.wanted.clone.oneport.payments.presentation.web.request.payment.PgCorp;
+import com.wanted.clone.oneport.payments.application.port.in.*;
+import com.wanted.clone.oneport.payments.domain.entity.payment.PgCorp;
 import com.wanted.clone.oneport.payments.presentation.web.request.payment.ReqPaymentApprove;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +47,8 @@ public class PaymentController {
 
         String result = paymentFullfillUseCase.paymentApproved(ReqPaymentApprove.builder()
             .orderId(orderId).paymentKey(paymentKey).selectedPgCorp(PgCorp.valueOf(pgCorpName.toUpperCase())).totalAmount(Integer.parseInt(amount))
-            .build());
+            .build()
+            .toCommand());
         return pgWidgetUseCase.renderPgUi(PaymentRequest.of(pgCorpName), result);
     }
 

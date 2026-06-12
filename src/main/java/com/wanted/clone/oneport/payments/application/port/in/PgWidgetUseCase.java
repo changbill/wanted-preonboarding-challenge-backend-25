@@ -1,4 +1,4 @@
-package com.wanted.clone.oneport.payments.presentation.port.in;
+package com.wanted.clone.oneport.payments.application.port.in;
 
 import com.wanted.clone.oneport.payments.application.service.dto.PaymentRequest;
 

@@ -1,9 +1,6 @@
-package com.wanted.clone.oneport.payments.presentation.port.in;
-
+package com.wanted.clone.oneport.payments.application.port.in;
 
 import com.wanted.clone.oneport.payments.domain.entity.order.Order;
-
-import java.util.UUID;
 
 public interface GetOrderInfoUseCase {
     Order getOrderInfo(String orderId);

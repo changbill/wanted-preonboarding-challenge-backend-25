@@ -1,6 +1,6 @@
 package com.wanted.clone.oneport.payments.application.service.dto;
 
-import com.wanted.clone.oneport.payments.presentation.web.request.payment.PgCorp;
+import com.wanted.clone.oneport.payments.domain.entity.payment.PgCorp;
 import lombok.Getter;
 
 @Getter

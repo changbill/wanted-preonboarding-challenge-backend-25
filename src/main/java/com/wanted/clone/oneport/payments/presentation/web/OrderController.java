@@ -1,8 +1,6 @@
 package com.wanted.clone.oneport.payments.presentation.web;
 
-import com.wanted.clone.oneport.payments.application.port.out.repository.OrderRepository;
-import com.wanted.clone.oneport.payments.presentation.port.in.CreateNewOrderUseCase;
-import com.wanted.clone.oneport.payments.presentation.web.request.order.PurchaseOrder;
+import com.wanted.clone.oneport.payments.application.port.in.CreateNewOrderUseCase;
 import com.wanted.clone.oneport.payments.presentation.web.request.order.ReqNewOrder;
 import com.wanted.clone.oneport.payments.presentation.web.response.RespNewPurchaseOrderMessage;
 import jakarta.validation.Valid;
@@ -22,7 +20,7 @@ public class OrderController {
 
     @PostMapping("/new")
     public RespNewPurchaseOrderMessage newOrder(@RequestBody @Valid ReqNewOrder newOrder) throws Exception {
-        return RespNewPurchaseOrderMessage.from(createNewOrderUseCase.createOrder(newOrder));
+        return RespNewPurchaseOrderMessage.from(createNewOrderUseCase.createOrder(newOrder.toCommand()));
     }
 
     @PostMapping("/test")
