@@ -35,7 +35,6 @@ description: `/run {phase}` 요청을 받아 기획, 구현, 검증, 수정, 커
 
 - `_workspace/codex/{phase}/implementation.md`
 - `_workspace/codex/{phase}/verification.md`
-- `_workspace/codex/state.json`
 
 ## PR Policy
 
@@ -52,7 +51,6 @@ description: `/run {phase}` 요청을 받아 기획, 구현, 검증, 수정, 커
 - `.codex/config.toml`
 - `.agents/skills/codex-orchestrator/SKILL.md`
 - `.agents/harness/guard.ps1`
-- `.agents/harness/set-state.ps1`
 - `.githooks/pre-commit`
 
 ## Failure Policy

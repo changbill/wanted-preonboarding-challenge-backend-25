@@ -1,6 +1,5 @@
 #!/bin/sh
 
-state_file="_workspace/codex/state.json"
 branch=$(git branch --show-current)
 
 case "$branch" in
@@ -11,21 +10,17 @@ case "$branch" in
     ;;
 esac
 
-if [ ! -f "$state_file" ]; then
-  echo "[HARNESS BLOCKED] Missing _workspace/codex/state.json."
-  exit 1
-fi
+branch_name=${branch#feature/}
+phase_number=${branch_name%%-*}
 
-phase=$(grep -o '"phase"[[:space:]]*:[[:space:]]*"[^"]*"' "$state_file" | sed 's/.*"phase"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
-status=$(grep -o '"status"[[:space:]]*:[[:space:]]*"[^"]*"' "$state_file" | sed 's/.*"status"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+case "$phase_number" in
+  [0-9]) phase_number="0$phase_number" ;;
+esac
 
-if [ "$status" != "verifying" ] && [ "$status" != "committing" ] && [ "$status" != "committed" ]; then
-  echo "[HARNESS BLOCKED] Commit requires verifying, committing, or committed status. Current: $status"
-  exit 1
-fi
+phase_dir=$(find _workspace/codex -maxdepth 1 -type d -name "phase-$phase_number*" | head -n 1)
 
-if [ -z "$phase" ]; then
-  echo "[HARNESS BLOCKED] state.json phase is empty."
+if [ -z "$phase_dir" ]; then
+  echo "[HARNESS BLOCKED] Missing phase artifact directory for phase-$phase_number."
   exit 1
 fi
 
@@ -42,18 +37,16 @@ while IFS= read -r file; do
     exit 1
   fi
 done <<EOF
-_workspace/codex/state.json
-_workspace/codex/$phase/implementation.md
-_workspace/codex/$phase/verification.md
+$phase_dir/implementation.md
+$phase_dir/verification.md
 AGENTS.md
 .codex/config.toml
 .agents/skills/codex-orchestrator/SKILL.md
 .agents/harness/guard.ps1
-.agents/harness/set-state.ps1
 .githooks/pre-commit
 EOF
 
-verification_file="_workspace/codex/$phase/verification.md"
+verification_file="$phase_dir/verification.md"
 if ! grep -Eq 'gradlew(\.bat)? test:[[:space:]]*PASS' "$verification_file"; then
   echo "[HARNESS BLOCKED] verification.md does not contain gradlew test PASS."
   exit 1

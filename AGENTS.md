@@ -23,7 +23,6 @@
 |------|------|
 | `/run {phase}` | phase 전체 수행 |
 | `/phase {phase}` | `/run`과 동일 |
-| `/status` | 현재 상태 확인 |
 
 ## 필수 검증
 
@@ -35,6 +34,4 @@
 
 - `.agents/skills/codex-orchestrator/SKILL.md`
 - `.agents/harness/guard.ps1`
-- `.agents/harness/set-state.ps1`
 - `.githooks/pre-commit`
-- `_workspace/codex/state.json`
