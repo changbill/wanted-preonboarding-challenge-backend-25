@@ -154,6 +154,8 @@ com.wanted.clone.oneport
 - 오케스트레이터는 `master` 또는 `main`에서 바로 수정하지 않고 `feature/{번호}-{작업요약}` 브랜치를 만든 뒤 진행한다.
 - 오케스트레이터는 내부적으로 기획, 구현, 검증, 수정, 커밋을 수행한다.
 - phase 산출물과 Codex/하네스 설정 파일은 검증된 코드 변경과 같은 커밋에 포함한다.
+- phase 완료 후 오케스트레이터는 feature 브랜치를 push하고 `master` 대상 PR 생성을 시도한다.
+- PR 생성 도구, 인증, 원격 저장소 설정 문제로 자동 생성이 불가능하면 `_workspace/codex/{phase}/pr.md`에 PR 초안을 남기고 최종 보고에 이유를 기록한다.
 - 하네스 상태는 `_workspace/codex/state.json`에 저장한다.
 - 단계별 산출물은 `_workspace/codex/{phase}/` 아래에 둔다.
 - 주요 산출물은 `plan.md`, `implementation.md`, `verification.md`다.

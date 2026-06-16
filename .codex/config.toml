@@ -1,1 +1,7 @@
 approval_policy = "never"
+
+[harness]
+phase_completion_pr = true
+pr_base_branch = "master"
+pr_create_command = "gh pr create"
+pr_fallback_artifact = "_workspace/codex/{phase}/pr.md"

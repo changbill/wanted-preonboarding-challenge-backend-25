@@ -24,6 +24,7 @@ description: `/run {phase}` 요청을 받아 기획, 구현, 검증, 수정, 커
 10. 코드 변경, 문서 변경, phase 산출물, Codex/하네스 설정 파일을 함께 stage
 11. 한글 커밋 메시지로 commit
 12. `guard.ps1 -Command run -Phase {phase} -Stage finish`
+13. feature 브랜치를 remote에 push하고 `master` 대상 PR 생성을 시도한다. `gh pr create` 사용이 불가능하거나 인증이 없으면 `_workspace/codex/{phase}/pr.md`에 PR 제목/본문을 남기고 최종 보고에 PR 미생성 사유를 기록한다.
 
 ## Required Artifacts
 
@@ -31,6 +32,14 @@ description: `/run {phase}` 요청을 받아 기획, 구현, 검증, 수정, 커
 - `_workspace/codex/{phase}/implementation.md`
 - `_workspace/codex/{phase}/verification.md`
 - `_workspace/codex/state.json`
+
+## PR Policy
+
+- phase 완료 후 현재 `feature/...` 브랜치를 `master`로 병합하기 위한 PR을 생성한다.
+- 기본 명령은 `gh pr create --base master --head {branch}`다.
+- PR 제목과 본문은 저장소 PR 작성 규칙을 따른다.
+- 네트워크, 인증, 원격 저장소 설정, `gh` 미설치로 PR 생성이 불가능하면 커밋은 유지하고 `_workspace/codex/{phase}/pr.md`에 PR 초안을 남긴다.
+- PR 생성 실패는 구현 검증 실패로 취급하지 않지만, 최종 보고에 원인과 다음 수동 명령을 명확히 남긴다.
 
 ## Commit Includes
 
