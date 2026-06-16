@@ -15,7 +15,7 @@ description: `/run {phase}` 요청을 받아 기획, 구현, 검증, 수정, 커
 1. `guard.ps1 -Command run -Phase {phase} -Stage start`
 2. `feature/...` 브랜치 확인. `master` 또는 `main`이면 `feature/{번호}-{작업요약}` 브랜치 생성/전환
 3. phase 번호를 `PLAN.md` 단계 번호에 매핑한다. `phase-02`는 `2단계` 전체다.
-4. 루트 `PLAN.md`의 해당 단계 todo를 기준으로 범위를 잡는다. phase별 `plan.md`는 만들지 않는다.
+4. 루트 `PLAN.md`의 해당 단계 todo를 기준으로 범위를 잡는다.
 5. 서브 에이전트는 큰 조사나 리뷰가 필요할 때만 사용한다.
 6. 구현 후 `_workspace/codex/{phase}/implementation.md` 작성
 7. `.\gradlew.bat test` 실행
@@ -41,7 +41,7 @@ description: `/run {phase}` 요청을 받아 기획, 구현, 검증, 수정, 커
 - phase 완료 후 현재 `feature/...` 브랜치를 `master`로 병합하기 위한 PR을 생성한다.
 - 기본 명령은 `gh pr create --base master --head {branch}`다.
 - PR 제목과 본문은 저장소 PR 작성 규칙을 따른다.
-- PR 생성 실패는 구현 검증 실패로 취급하지 않는다. 최종 보고에 원인과 다음 명령만 남긴다.
+- PR 생성 실패 시 최종 보고에 원인과 다음 명령을 남긴다.
 
 ## Commit Includes
 
@@ -55,7 +55,7 @@ description: `/run {phase}` 요청을 받아 기획, 구현, 검증, 수정, 커
 
 ## Failure Policy
 
-- `feature/...` 브랜치가 아니면 구현/커밋하지 않는다.
-- 테스트 실패를 숨기고 커밋하지 않는다.
+- 구현/커밋 브랜치는 `feature/...`를 사용한다.
+- 커밋 전 테스트 통과를 확인한다.
 - 계획 밖 변경이 필요하면 멈추고 보고한다.
 - 최종 보고는 변경, 검증, 커밋/PR만 짧게 남긴다.

@@ -77,7 +77,6 @@ com.wanted.clone.oneport
 - 구현/커밋은 `feature/...` 브랜치에서만 한다.
 - phase 산출물은 `_workspace/codex/{phase}/implementation.md`, `verification.md`다.
 - 계획은 phase별 `plan.md`가 아니라 루트 `PLAN.md`를 사용한다.
-- 단계별 진행 상태 파일은 만들지 않는다.
 - 문서는 조건부로만 읽고 수정한다.
   - 동작 정의 변경: `SPEC.md`
   - 조사/판단 변경: `RESEARCH.md`
