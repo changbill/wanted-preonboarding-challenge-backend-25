@@ -53,10 +53,10 @@ function Assert-VerificationPassed {
 }
 
 function Assert-CommitInputsReady {
-    Assert-ArtifactExists "_workspace\codex\$Phase\plan.md"
     Assert-ArtifactExists "_workspace\codex\$Phase\implementation.md"
     Assert-ArtifactExists "_workspace\codex\$Phase\verification.md"
     Assert-ArtifactExists "_workspace\codex\state.json"
+    Assert-ArtifactExists "PLAN.md"
     Assert-ArtifactExists "AGENTS.md"
     Assert-ArtifactExists ".codex\config.toml"
     Assert-ArtifactExists ".agents\skills\codex-orchestrator\SKILL.md"
@@ -91,7 +91,7 @@ if ($Stage -eq "start") {
             if ($status -ne "planning") {
                 throw "[HARNESS BLOCKED] implement requires planning status. Current: $status"
             }
-            Assert-ArtifactExists "_workspace\codex\$Phase\plan.md"
+            Assert-ArtifactExists "PLAN.md"
         }
         "verify" {
             Assert-PhaseMatches $state
@@ -129,7 +129,7 @@ switch ($Command) {
         }
     }
     "plan" {
-        Assert-ArtifactExists "_workspace\codex\$Phase\plan.md"
+        Assert-ArtifactExists "PLAN.md"
         if ($status -ne "planning") {
             throw "[HARNESS BLOCKED] plan finish requires planning status. Current: $status"
         }
