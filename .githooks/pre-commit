@@ -1,0 +1,62 @@
+#!/bin/sh
+
+state_file="_workspace/codex/state.json"
+branch=$(git branch --show-current)
+
+case "$branch" in
+  feature/*) ;;
+  *)
+    echo "[HARNESS BLOCKED] Commit must be made on feature/* branch. Current: $branch"
+    exit 1
+    ;;
+esac
+
+if [ ! -f "$state_file" ]; then
+  echo "[HARNESS BLOCKED] Missing _workspace/codex/state.json."
+  exit 1
+fi
+
+phase=$(grep -o '"phase"[[:space:]]*:[[:space:]]*"[^"]*"' "$state_file" | sed 's/.*"phase"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+status=$(grep -o '"status"[[:space:]]*:[[:space:]]*"[^"]*"' "$state_file" | sed 's/.*"status"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+
+if [ "$status" != "verifying" ] && [ "$status" != "committing" ] && [ "$status" != "committed" ]; then
+  echo "[HARNESS BLOCKED] Commit requires verifying, committing, or committed status. Current: $status"
+  exit 1
+fi
+
+if [ -z "$phase" ]; then
+  echo "[HARNESS BLOCKED] state.json phase is empty."
+  exit 1
+fi
+
+required_files="
+_workspace/codex/state.json
+_workspace/codex/$phase/plan.md
+_workspace/codex/$phase/implementation.md
+_workspace/codex/$phase/verification.md
+AGENTS.md
+.codex/config.toml
+.agents/skills/codex-orchestrator/SKILL.md
+.agents/harness/guard.ps1
+.agents/harness/set-state.ps1
+"
+
+for file in $required_files; do
+  if [ ! -f "$file" ]; then
+    echo "[HARNESS BLOCKED] Missing required artifact/config: $file"
+    exit 1
+  fi
+
+  if ! git diff --quiet -- "$file"; then
+    echo "[HARNESS BLOCKED] Required artifact/config has unstaged changes: $file"
+    exit 1
+  fi
+done
+
+verification_file="_workspace/codex/$phase/verification.md"
+if ! grep -Eq 'gradlew(\.bat)? test:[[:space:]]*PASS' "$verification_file"; then
+  echo "[HARNESS BLOCKED] verification.md does not contain gradlew test PASS."
+  exit 1
+fi
+
+echo "[HARNESS OK] pre-commit passed"

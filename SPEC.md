@@ -146,3 +146,17 @@ com.wanted.clone.oneport
 - 결제 승인/취소 핵심 흐름 테스트가 부족하다.
 - `create_schema.sql`과 JPA entity 매핑의 ID 타입/PK 구조가 일치하지 않을 가능성이 있다.
 - `member` 패키지는 결제 패키지와 같은 아키텍처 경계를 사용하지 않는다.
+
+## Codex 하네스
+
+- 사용자는 `/run {phase}` 또는 `/phase {phase}`로 phase를 시작한다.
+- 각 phase의 구현과 커밋은 `feature/...` 브랜치에서만 수행한다.
+- 오케스트레이터는 `master` 또는 `main`에서 바로 수정하지 않고 `feature/{번호}-{작업요약}` 브랜치를 만든 뒤 진행한다.
+- 오케스트레이터는 내부적으로 기획, 구현, 검증, 수정, 커밋을 수행한다.
+- phase 산출물과 Codex/하네스 설정 파일은 검증된 코드 변경과 같은 커밋에 포함한다.
+- 하네스 상태는 `_workspace/codex/state.json`에 저장한다.
+- 단계별 산출물은 `_workspace/codex/{phase}/` 아래에 둔다.
+- 주요 산출물은 `plan.md`, `implementation.md`, `verification.md`다.
+- `.agents/harness/guard.ps1`은 phase 시작/완료와 내부 단계 전이를 검사한다.
+- `.agents/harness/set-state.ps1`은 phase, status, last command, updated timestamp를 갱신한다.
+- 커밋 전 hook은 `feature/...` 브랜치, `verifying`/`committing`/`committed` 상태, `verification.md`의 `gradlew.bat test: PASS` 기록, 필수 산출물과 설정 파일의 staged 상태를 요구한다.
