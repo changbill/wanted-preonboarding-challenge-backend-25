@@ -65,7 +65,7 @@ com.wanted.clone.oneport
   - 주문 ID로 주문을 조회한다.
 - `PaymentService`
   - `ApprovePaymentCommand`로 결제 승인을 처리한다.
-  - 선택된 PG adapter로 결제 승인을 요청한다.
+  - `PgCorp` 기준으로 선택된 PG adapter에 결제 승인을 요청한다.
   - 승인 성공 시 주문 상태를 결제 완료로 변경하고 결제 원장을 저장한다.
   - 결제 원장에서 최신 결제 정보를 조회한다.
 - `CancelService`
@@ -74,13 +74,13 @@ com.wanted.clone.oneport
   - 취소 가능 금액과 주문 상태를 확인한다.
   - PG 취소 API 호출 후 취소 원장을 저장한다.
 - `PgWidgetService`
-  - PG 이름과 page type에 맞는 Thymeleaf template 경로를 반환한다.
+  - `PgCorp` 기준으로 선택된 PG widget adapter와 page type에 맞는 Thymeleaf template 경로를 반환한다.
 
 ### 출력 포트
 
 - PG 연동
-  - `PaymentAPIs`: application command를 받아 application result를 반환한다.
-  - `PgWidget`
+  - `PaymentAPIs`: `provider()`로 지원 PG를 명시하고, application command를 받아 application result를 반환한다.
+  - `PgWidget`: `provider()`로 지원 PG를 명시하고, PG별 template 경로를 반환한다.
 - 저장소
   - `OrderRepository`
   - `PaymentLedgerRepository`
@@ -110,8 +110,8 @@ com.wanted.clone.oneport
 ### 출력 adapter
 
 - Toss PG
-  - `TossPayment`: `PaymentAPIs` 구현
-  - `TossWidget`: `PgWidget` 구현
+  - `TossPayment`: `PaymentAPIs` 구현, `PgCorp.TOSS` 지원
+  - `TossWidget`: `PgWidget` 구현, `PgCorp.TOSS` 지원
   - `TossPaymentAPIs`: Retrofit interface
   - `TossApiClientConfig`: Retrofit/OkHttp bean 구성
   - Toss request/response DTO

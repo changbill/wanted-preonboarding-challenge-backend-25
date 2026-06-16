@@ -97,25 +97,26 @@
 
 입력 포트가 `payments.presentation.port.in` 아래에 있다. 유스케이스는 컨트롤러가 제공하는 것이 아니라 애플리케이션이 외부에 제공하는 API이므로 `application.port.in`에 두는 편이 의존 방향을 더 명확하게 만든다.
 
-### 애플리케이션 서비스가 상태를 가짐
+### 애플리케이션 서비스가 상태를 가졌던 문제
 
-`PaymentService`에 `public PaymentAPIs paymentAPIs` 필드가 있고 요청 처리 중 선택된 PG API를 필드에 저장한다.
+이전에는 `PaymentService`에 `public PaymentAPIs paymentAPIs` 필드가 있고 요청 처리 중 선택된 PG API를 필드에 저장했다.
 
-영향:
+해결:
 
-- singleton Spring bean에서 요청 간 상태 공유 위험이 있다.
-- 동시 요청에서 결제사가 섞일 수 있다.
-- 지역 변수로 충분한 값이 서비스 상태가 된다.
+- 선택된 PG API는 `paymentApproved()` 안의 지역 변수로만 사용한다.
+- singleton Spring bean에 요청별 PG adapter 상태를 남기지 않는다.
 
-### PG 선택 방식이 클래스명 규칙에 의존함
+### PG 선택 방식이 클래스명 규칙에 의존했던 문제
 
-`PaymentService`, `PgWidgetService`가 bean class name을 `split("Payment")`, `split("Widget")`으로 잘라 map key를 만든다.
+이전에는 `PaymentService`, `PgWidgetService`가 bean class name을 `split("Payment")`, `split("Widget")`으로 잘라 map key를 만들었다.
 
-영향:
+해결:
 
-- 클래스명 변경이 런타임 동작을 깨뜨린다.
-- 결제사 식별자와 bean 이름 규칙이 암묵적이다.
-- enum 또는 명시적 `supports(PgProvider)` 메서드가 더 안전하다.
+- `PaymentAPIs.provider()`와 `PgWidget.provider()` 계약을 추가했다.
+- `TossPayment`, `TossWidget`은 `PgCorp.TOSS`를 반환한다.
+- `PaymentService`는 `EnumMap<PgCorp, PaymentAPIs>`로 adapter를 선택한다.
+- `PgWidgetService`는 `EnumMap<PgCorp, PgWidget>`로 widget adapter를 선택한다.
+- 클래스명 변경이 PG 선택 로직을 깨뜨리지 않는다.
 
 ### 결제 취소가 Toss 타입에 묶임
 

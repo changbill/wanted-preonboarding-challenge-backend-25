@@ -11,18 +11,22 @@
 ## 2단계: PG adapter 선택 방식 개선
 
 - [ ] PG 식별자 enum 또는 value object 정의
-- [ ] `PaymentAPIs.provider()` 계약 추가
-- [ ] `TossPayment.provider()`에서 `PgProvider.TOSS` 반환
-- [ ] 신규 PG adapter 추가 시 각 adapter가 자기 `PgProvider` 반환
-- [ ] `PaymentService` PG selector를 `EnumMap<PgProvider, PaymentAPIs>`로 변경
-- [ ] 클래스명 `split()` 기반 selector 제거
+- [x] `PaymentAPIs.provider()` 계약 추가
+- [x] `PgWidget.provider()` 계약 추가
+- [x] `TossPayment.provider()`에서 `PgCorp.TOSS` 반환
+- [x] `TossWidget.provider()`에서 `PgCorp.TOSS` 반환
+- [x] 신규 PG adapter 추가 시 각 adapter가 자기 `PgCorp` 반환
+- [x] `PaymentService` PG selector를 `EnumMap<PgCorp, PaymentAPIs>`로 변경
+- [x] `PgWidgetService` PG selector를 `EnumMap<PgCorp, PgWidget>`로 변경
+- [x] 클래스명 `split()` 기반 selector 제거
 - [ ] 문자열 `pgCorpName`을 `PgProvider.from()`으로 변환
 - [ ] 지원하지 않는 PG 요청의 예외 응답 정의
-- [ ] `selectPgAPI(PgProvider)` 단위 테스트 추가
+- [x] `selectPgAPI(PgCorp)` 단위 테스트 추가
+- [x] `PgWidgetService` provider 선택 단위 테스트 추가
 
 ## 3단계: 결제/취소 유스케이스 안정화
 
-- [ ] `PaymentService` 요청별 mutable field 제거
+- [x] `PaymentService` 요청별 mutable field 제거
 - [ ] 결제 승인 중복 처리 규칙 정의
 - [ ] 동일 `orderId` 결제 승인 요청 idempotent 처리
 - [ ] 동일 `paymentKey` 결제 원장 중복 저장 방지 규칙 정의
