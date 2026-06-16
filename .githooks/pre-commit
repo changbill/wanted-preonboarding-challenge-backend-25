@@ -29,19 +29,9 @@ if [ -z "$phase" ]; then
   exit 1
 fi
 
-required_files="
-_workspace/codex/state.json
-_workspace/codex/$phase/plan.md
-_workspace/codex/$phase/implementation.md
-_workspace/codex/$phase/verification.md
-AGENTS.md
-.codex/config.toml
-.agents/skills/codex-orchestrator/SKILL.md
-.agents/harness/guard.ps1
-.agents/harness/set-state.ps1
-"
+while IFS= read -r file; do
+  [ -z "$file" ] && continue
 
-for file in $required_files; do
   if [ ! -f "$file" ]; then
     echo "[HARNESS BLOCKED] Missing required artifact/config: $file"
     exit 1
@@ -51,7 +41,17 @@ for file in $required_files; do
     echo "[HARNESS BLOCKED] Required artifact/config has unstaged changes: $file"
     exit 1
   fi
-done
+done <<EOF
+_workspace/codex/state.json
+_workspace/codex/$phase/plan.md
+_workspace/codex/$phase/implementation.md
+_workspace/codex/$phase/verification.md
+AGENTS.md
+.codex/config.toml
+.agents/skills/codex-orchestrator/SKILL.md
+.agents/harness/guard.ps1
+.agents/harness/set-state.ps1
+EOF
 
 verification_file="_workspace/codex/$phase/verification.md"
 if ! grep -Eq 'gradlew(\.bat)? test:[[:space:]]*PASS' "$verification_file"; then

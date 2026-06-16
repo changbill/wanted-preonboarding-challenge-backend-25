@@ -1,7 +1,7 @@
 ﻿{
-    "phase":  "phase-01-test-import-fix",
+    "phase":  "phase-02-PG adapter 선택 방식 개선",
     "status":  "committed",
     "last_command":  "commit",
-    "updated_at":  "2026-06-16T07:32:59Z",
-    "notes":  "테스트 profile DB 의존 제거 커밋 완료"
+    "updated_at":  "2026-06-16T08:02:55Z",
+    "notes":  "PG adapter provider 선택 방식 개선 검증 통과"
 }
