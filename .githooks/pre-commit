@@ -43,7 +43,6 @@ while IFS= read -r file; do
   fi
 done <<EOF
 _workspace/codex/state.json
-_workspace/codex/$phase/plan.md
 _workspace/codex/$phase/implementation.md
 _workspace/codex/$phase/verification.md
 AGENTS.md
