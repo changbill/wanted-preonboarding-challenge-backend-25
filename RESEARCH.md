@@ -116,6 +116,8 @@
 - `TossPayment`, `TossWidget`은 `PgCorp.TOSS`를 반환한다.
 - `PaymentService`는 `EnumMap<PgCorp, PaymentAPIs>`로 adapter를 선택한다.
 - `PgWidgetService`는 `EnumMap<PgCorp, PgWidget>`로 widget adapter를 선택한다.
+- `PgCorp.from(String)`이 외부 입력의 대소문자와 하이픈 표기를 정규화해 PG 식별자로 변환한다.
+- 지원하지 않는 PG 이름이나 adapter 없는 PG는 `UnsupportedPgCorpException`으로 명시하고, 웹 계층은 HTTP 400 `ErrorResponse`로 응답한다.
 - 클래스명 변경이 PG 선택 로직을 깨뜨리지 않는다.
 
 ### 결제 취소가 Toss 타입에 묶임

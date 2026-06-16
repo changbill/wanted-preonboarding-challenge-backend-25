@@ -11,6 +11,7 @@ import com.wanted.clone.oneport.payments.domain.entity.order.Order;
 import com.wanted.clone.oneport.payments.domain.entity.order.OrderStatus;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentLedger;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PgCorp;
+import com.wanted.clone.oneport.payments.domain.exception.UnsupportedPgCorpException;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +72,7 @@ public class PaymentService implements PaymentFullfillUseCase {
     public PaymentAPIs selectPgAPI(PgCorp pgCorp) {
         PaymentAPIs paymentAPIs = pgAPIs.get(pgCorp);
         if (paymentAPIs == null)
-            throw new IllegalArgumentException("Unsupported pgCorp: " + pgCorp.name());
+            throw UnsupportedPgCorpException.forProvider(pgCorp);
         return paymentAPIs;
     }
 

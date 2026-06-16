@@ -66,6 +66,7 @@ com.wanted.clone.oneport
 - `PaymentService`
   - `ApprovePaymentCommand`로 결제 승인을 처리한다.
   - `PgCorp` 기준으로 선택된 PG adapter에 결제 승인을 요청한다.
+  - 지원 adapter가 없는 `PgCorp`는 `UnsupportedPgCorpException`으로 거부한다.
   - 승인 성공 시 주문 상태를 결제 완료로 변경하고 결제 원장을 저장한다.
   - 결제 원장에서 최신 결제 정보를 조회한다.
 - `CancelService`
@@ -75,6 +76,8 @@ com.wanted.clone.oneport
   - PG 취소 API 호출 후 취소 원장을 저장한다.
 - `PgWidgetService`
   - `PgCorp` 기준으로 선택된 PG widget adapter와 page type에 맞는 Thymeleaf template 경로를 반환한다.
+  - `pgCorpName` 문자열은 `PgCorp.from()`에서 대소문자와 하이픈 표기를 정규화한 뒤 enum으로 변환한다.
+  - 지원 widget adapter가 없는 `PgCorp`는 `UnsupportedPgCorpException`으로 거부한다.
 
 ### 출력 포트
 
@@ -87,6 +90,11 @@ com.wanted.clone.oneport
   - `PaymentSettlementsRepository`
   - `PaymentRepository`
   - `TransactionTypeRepository`
+
+### 예외 응답
+
+- 지원하지 않는 PG 이름 또는 adapter 없는 PG 요청은 `UnsupportedPgCorpException`으로 처리한다.
+- 웹 요청에서 해당 예외가 발생하면 HTTP 400 `BAD_REQUEST`와 `ErrorResponse` 본문을 반환한다.
 
 ### 도메인/JPA 모델
 
@@ -150,6 +158,7 @@ com.wanted.clone.oneport
 ## Codex 하네스
 
 - 사용자는 `/run {phase}` 또는 `/phase {phase}`로 phase를 시작한다.
+- phase 기준은 `PLAN.md`의 단계다. 예를 들어 `phase-02`는 `PLAN.md`의 `2단계` todo 전체를 완료하는 단위다.
 - 각 phase의 구현과 커밋은 `feature/...` 브랜치에서만 수행한다.
 - 오케스트레이터는 `master` 또는 `main`에서 바로 수정하지 않고 `feature/{번호}-{작업요약}` 브랜치를 만든 뒤 진행한다.
 - 오케스트레이터는 내부적으로 기획, 구현, 검증, 수정, 커밋을 수행한다.

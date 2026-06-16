@@ -46,7 +46,7 @@ public class PaymentController {
     ) throws Exception {
 
         String result = paymentFullfillUseCase.paymentApproved(ReqPaymentApprove.builder()
-            .orderId(orderId).paymentKey(paymentKey).selectedPgCorp(PgCorp.valueOf(pgCorpName.toUpperCase())).totalAmount(Integer.parseInt(amount))
+            .orderId(orderId).paymentKey(paymentKey).selectedPgCorp(PgCorp.from(pgCorpName)).totalAmount(Integer.parseInt(amount))
             .build()
             .toCommand());
         return pgWidgetUseCase.renderPgUi(PaymentRequest.of(pgCorpName), result);

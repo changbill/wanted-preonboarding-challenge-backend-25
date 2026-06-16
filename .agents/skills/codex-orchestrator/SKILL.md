@@ -14,17 +14,18 @@ description: `/run {phase}` 요청을 받아 기획, 구현, 검증, 수정, 커
 
 1. `guard.ps1 -Command run -Phase {phase} -Stage start`
 2. `feature/...` 브랜치 확인. `master` 또는 `main`이면 `feature/{번호}-{작업요약}` 브랜치 생성/전환
-3. 조사 후 `_workspace/codex/{phase}/plan.md` 작성
-4. 서브 에이전트 사용 여부를 판단한다. 병렬 조사/리뷰/분리 구현 이득이 있으면 위임하고, 이득이 작으면 직접 수행한다.
-5. 계획 범위 구현 후 `_workspace/codex/{phase}/implementation.md` 작성
-6. `.\gradlew.bat test` 실행
-7. 실패하면 계획 범위 안에서 수정하고 다시 검증. 같은 실패가 3회 반복되면 `blocked`
-8. 통과하면 `_workspace/codex/{phase}/verification.md`에 `gradlew.bat test: PASS` 기록
-9. 구현 결과가 `PLAN.md`, `README.md`, `RESEARCH.md`, `SPEC.md`와 달라지는지 확인하고 필요한 문서만 갱신
-10. 코드 변경, 문서 변경, phase 산출물, Codex/하네스 설정 파일을 함께 stage
-11. 한글 커밋 메시지로 commit
-12. `guard.ps1 -Command run -Phase {phase} -Stage finish`
-13. feature 브랜치를 remote에 push하고 `master` 대상 PR 생성을 시도한다. `gh pr create` 사용이 불가능하거나 인증이 없으면 `_workspace/codex/{phase}/pr.md`에 PR 제목/본문을 남기고 최종 보고에 PR 미생성 사유를 기록한다.
+3. phase 번호를 `PLAN.md` 단계 번호에 매핑한다. 예를 들어 `phase-02`는 `2단계`의 미완료 todo 전체를 범위로 잡는다.
+4. 조사 후 `_workspace/codex/{phase}/plan.md` 작성
+5. 서브 에이전트 사용 여부를 판단한다. 병렬 조사/리뷰/분리 구현 이득이 있으면 위임하고, 이득이 작으면 직접 수행한다.
+6. 계획 범위 구현 후 `_workspace/codex/{phase}/implementation.md` 작성
+7. `.\gradlew.bat test` 실행
+8. 실패하면 계획 범위 안에서 수정하고 다시 검증. 같은 실패가 3회 반복되면 `blocked`
+9. 통과하면 `_workspace/codex/{phase}/verification.md`에 `gradlew.bat test: PASS` 기록
+10. 구현 결과가 `PLAN.md`, `README.md`, `RESEARCH.md`, `SPEC.md`와 달라지는지 확인하고 필요한 문서만 갱신
+11. 코드 변경, 문서 변경, phase 산출물, Codex/하네스 설정 파일을 함께 stage
+12. 한글 커밋 메시지로 commit
+13. `guard.ps1 -Command run -Phase {phase} -Stage finish`
+14. feature 브랜치를 remote에 push하고 `master` 대상 PR 생성을 시도한다. `gh pr create` 사용이 불가능하거나 인증이 없으면 `_workspace/codex/{phase}/pr.md`에 PR 제목/본문을 남기고 최종 보고에 PR 미생성 사유를 기록한다.
 
 ## Required Artifacts
 

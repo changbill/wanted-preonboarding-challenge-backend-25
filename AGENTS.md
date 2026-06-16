@@ -6,6 +6,7 @@
 
 - 작업은 항상 `feature/...` 브랜치에서 수행한다. `master` 또는 `main`에서 구현/커밋하지 않는다.
 - 현재 브랜치가 `master` 또는 `main`이면 `/run` 시작 직후 `feature/{번호}-{작업요약}` 브랜치를 만들고 전환한다.
+- phase 기준은 `PLAN.md`의 단계다. 예를 들어 `phase-02`는 `PLAN.md`의 `2단계` todo 전체를 완료하는 단위다.
 - 계획, 구현 요약, 검증 결과는 `_workspace/codex/{phase}/`에 남긴다.
 - 커밋에는 코드 변경, phase 산출물, Codex/하네스 설정을 함께 포함한다.
 - phase 완료 후 feature 브랜치를 push하고 `master` 대상 PR 생성을 시도한다. PR 생성 도구나 인증이 없으면 `_workspace/codex/{phase}/pr.md`에 PR 제목/본문을 남기고 보고한다.

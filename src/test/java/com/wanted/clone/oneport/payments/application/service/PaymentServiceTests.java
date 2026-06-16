@@ -4,6 +4,7 @@ import com.wanted.clone.oneport.payments.application.port.out.pg.PaymentAPIs;
 import com.wanted.clone.oneport.payments.application.port.out.repository.OrderRepository;
 import com.wanted.clone.oneport.payments.application.port.out.repository.PaymentLedgerRepository;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PgCorp;
+import com.wanted.clone.oneport.payments.domain.exception.UnsupportedPgCorpException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +47,7 @@ class PaymentServiceTests {
         paymentService.init();
 
         Assertions.assertThrows(
-            IllegalArgumentException.class,
+            UnsupportedPgCorpException.class,
             () -> paymentService.selectPgAPI(PgCorp.NHN_KCP)
         );
     }

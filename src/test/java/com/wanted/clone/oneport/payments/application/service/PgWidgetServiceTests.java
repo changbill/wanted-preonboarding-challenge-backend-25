@@ -3,6 +3,7 @@ package com.wanted.clone.oneport.payments.application.service;
 import com.wanted.clone.oneport.payments.application.port.out.pg.PgWidget;
 import com.wanted.clone.oneport.payments.application.service.dto.PaymentRequest;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PgCorp;
+import com.wanted.clone.oneport.payments.domain.exception.UnsupportedPgCorpException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +37,7 @@ class PgWidgetServiceTests {
         pgWidgetService.init();
 
         Assertions.assertThrows(
-            IllegalArgumentException.class,
+            UnsupportedPgCorpException.class,
             () -> pgWidgetService.renderPgUi(PaymentRequest.of("nhn_kcp"), "checkout")
         );
     }

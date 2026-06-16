@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 public class PaymentRequest {
-    private final String pgCorpName;
+    private final PgCorp pgCorp;
 
     private PaymentRequest(String name) {
-        this.pgCorpName = PgCorp.valueOf(name.toUpperCase()).toString().toLowerCase();
+        this.pgCorp = PgCorp.from(name);
     }
 
     public static PaymentRequest of(String pgCorpName) {

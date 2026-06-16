@@ -1,5 +1,6 @@
 package com.wanted.clone.oneport.core.common;
 
+import com.wanted.clone.oneport.payments.domain.exception.UnsupportedPgCorpException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +32,13 @@ public class GlobalException extends ResponseEntityExceptionHandler {
         logger.error("BAD_REQUEST ::: ", ex);
         return ResponseEntity.status(status)
                 .body(new ErrorResponse(null, ex.getBindingResult().getAllErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST));
+    }
+
+    @ExceptionHandler(UnsupportedPgCorpException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public final ErrorResponse handleUnsupportedPgCorpException(UnsupportedPgCorpException ex, WebRequest request) {
+        logger.error("BAD_REQUEST ::: [UnsupportedPgCorpException] ", ex);
+        return new ErrorResponse(null, ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(IOException.class)

@@ -4,6 +4,7 @@ import com.wanted.clone.oneport.payments.application.port.out.pg.PgWidget;
 import com.wanted.clone.oneport.payments.application.service.dto.PaymentRequest;
 import com.wanted.clone.oneport.payments.application.port.in.PgWidgetUseCase;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PgCorp;
+import com.wanted.clone.oneport.payments.domain.exception.UnsupportedPgCorpException;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,13 +28,10 @@ public class PgWidgetService implements PgWidgetUseCase {
 
     @Override
     public String renderPgUi(PaymentRequest paymentRequest, String pageType) throws Exception {
-        String pgCorpName = Optional.ofNullable(paymentRequest.getPgCorpName())
-                .orElseThrow(() -> new IllegalArgumentException("PG Corp Name cannot be null"))
-                .toLowerCase();
-
-        PgWidget pgWidget = pgWidgetSelector.get(PgCorp.valueOf(pgCorpName.toUpperCase()));
+        PgCorp pgCorp = paymentRequest.getPgCorp();
+        PgWidget pgWidget = pgWidgetSelector.get(pgCorp);
         if (pgWidget == null)
-            throw new IllegalArgumentException("Unsupported pgCorp name: " + pgCorpName);
+            throw UnsupportedPgCorpException.forProvider(pgCorp);
         switch (pageType) {
             case "checkout":
                 return pgWidget.checkout();

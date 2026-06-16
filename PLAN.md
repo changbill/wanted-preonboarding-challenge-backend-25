@@ -10,7 +10,7 @@
 
 ## 2단계: PG adapter 선택 방식 개선
 
-- [ ] PG 식별자 enum 또는 value object 정의
+- [x] PG 식별자 enum 또는 value object 정의
 - [x] `PaymentAPIs.provider()` 계약 추가
 - [x] `PgWidget.provider()` 계약 추가
 - [x] `TossPayment.provider()`에서 `PgCorp.TOSS` 반환
@@ -19,8 +19,8 @@
 - [x] `PaymentService` PG selector를 `EnumMap<PgCorp, PaymentAPIs>`로 변경
 - [x] `PgWidgetService` PG selector를 `EnumMap<PgCorp, PgWidget>`로 변경
 - [x] 클래스명 `split()` 기반 selector 제거
-- [ ] 문자열 `pgCorpName`을 `PgProvider.from()`으로 변환
-- [ ] 지원하지 않는 PG 요청의 예외 응답 정의
+- [x] 문자열 `pgCorpName`을 `PgCorp.from()`으로 변환
+- [x] 지원하지 않는 PG 요청의 예외 응답 정의
 - [x] `selectPgAPI(PgCorp)` 단위 테스트 추가
 - [x] `PgWidgetService` provider 선택 단위 테스트 추가
 
