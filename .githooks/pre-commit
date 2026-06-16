@@ -1,0 +1,55 @@
+#!/bin/sh
+
+branch=$(git branch --show-current)
+
+case "$branch" in
+  feature/*) ;;
+  *)
+    echo "[HARNESS BLOCKED] Commit must be made on feature/* branch. Current: $branch"
+    exit 1
+    ;;
+esac
+
+branch_name=${branch#feature/}
+phase_number=${branch_name%%-*}
+
+case "$phase_number" in
+  [0-9]) phase_number="0$phase_number" ;;
+esac
+
+phase_dir=$(find _workspace/codex -maxdepth 1 -type d -name "phase-$phase_number*" | head -n 1)
+
+if [ -z "$phase_dir" ]; then
+  echo "[HARNESS BLOCKED] Missing phase artifact directory for phase-$phase_number."
+  exit 1
+fi
+
+while IFS= read -r file; do
+  [ -z "$file" ] && continue
+
+  if [ ! -f "$file" ]; then
+    echo "[HARNESS BLOCKED] Missing required artifact/config: $file"
+    exit 1
+  fi
+
+  if ! git diff --quiet -- "$file"; then
+    echo "[HARNESS BLOCKED] Required artifact/config has unstaged changes: $file"
+    exit 1
+  fi
+done <<EOF
+$phase_dir/implementation.md
+$phase_dir/verification.md
+AGENTS.md
+.codex/config.toml
+.agents/skills/codex-orchestrator/SKILL.md
+.agents/harness/guard.ps1
+.githooks/pre-commit
+EOF
+
+verification_file="$phase_dir/verification.md"
+if ! grep -Eq 'gradlew(\.bat)? test:[[:space:]]*PASS' "$verification_file"; then
+  echo "[HARNESS BLOCKED] verification.md does not contain gradlew test PASS."
+  exit 1
+fi
+
+echo "[HARNESS OK] pre-commit passed"

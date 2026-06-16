@@ -6,6 +6,7 @@ import com.wanted.clone.oneport.payments.application.port.out.pg.PaymentAPIs;
 import com.wanted.clone.oneport.payments.application.result.PaymentApprovalResult;
 import com.wanted.clone.oneport.payments.application.result.PaymentCancelResult;
 import com.wanted.clone.oneport.payments.application.result.PaymentSettlementResult;
+import com.wanted.clone.oneport.payments.domain.entity.payment.PgCorp;
 import com.wanted.clone.oneport.payments.infrastructure.pg.toss.request.TossApproveMessage;
 import com.wanted.clone.oneport.payments.infrastructure.pg.toss.request.TossCancelMessage;
 import com.wanted.clone.oneport.payments.infrastructure.pg.toss.response.TossApproveResponseMessage;
@@ -22,6 +23,11 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TossPayment implements PaymentAPIs {
     private final TossPaymentAPIs tossClient;
+
+    @Override
+    public PgCorp provider() {
+        return PgCorp.TOSS;
+    }
 
     @Override
     public PaymentApprovalResult requestPaymentApprove(ApprovePaymentCommand requestMessage) throws IOException {

@@ -29,7 +29,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 @SpringBootTest(properties = "grpc.server.port=9092")
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs

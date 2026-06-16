@@ -11,6 +11,7 @@ import com.wanted.clone.oneport.payments.domain.entity.order.Order;
 import com.wanted.clone.oneport.payments.domain.entity.order.OrderStatus;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentLedger;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PgCorp;
+import com.wanted.clone.oneport.payments.domain.exception.UnsupportedPgCorpException;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,14 +32,12 @@ public class PaymentService implements PaymentFullfillUseCase {
     private final PaymentLedgerRepository paymentLedgerRepository;
 
     private final Map<String, TransactionTypeRepository> transactionTypeRepositories = new HashMap<>();
-    private final Map<String, PaymentAPIs> pgAPIs = new HashMap<>();
-    public PaymentAPIs paymentAPIs;
+    private final Map<PgCorp, PaymentAPIs> pgAPIs = new EnumMap<>(PgCorp.class);
 
     @PostConstruct
     public void init() {
         for (PaymentAPIs paymentAPI : paymentAPIsSet) {
-            String pgCorpName = paymentAPI.getClass().getSimpleName().split("Payment")[0].toLowerCase();
-            pgAPIs.put(pgCorpName, paymentAPI);
+            pgAPIs.put(paymentAPI.provider(), paymentAPI);
         }
 
         for (TransactionTypeRepository transactionTypeRepository : transactionTypeRepositorySet) {
@@ -52,7 +51,7 @@ public class PaymentService implements PaymentFullfillUseCase {
     public String paymentApproved(ApprovePaymentCommand command) throws IOException {
         String orderId = command.getOrderId();
         verifyOrderIsCompleted(orderId);
-        paymentAPIs = selectPgAPI(command.getSelectedPgCorp());
+        PaymentAPIs paymentAPIs = selectPgAPI(command.getSelectedPgCorp());
         PaymentApprovalResult response = paymentAPIs.requestPaymentApprove(command);
 
         if (paymentAPIs.isPaymentApproved(response.getStatus().name())) {
@@ -71,10 +70,10 @@ public class PaymentService implements PaymentFullfillUseCase {
     }
 
     public PaymentAPIs selectPgAPI(PgCorp pgCorp) {
-        return switch (pgCorp.name().toLowerCase()) {
-            case "toss" -> pgAPIs.get("toss");
-            default -> throw new IllegalArgumentException("Invalid pgCorp name: " + pgCorp.name());
-        };
+        PaymentAPIs paymentAPIs = pgAPIs.get(pgCorp);
+        if (paymentAPIs == null)
+            throw UnsupportedPgCorpException.forProvider(pgCorp);
+        return paymentAPIs;
     }
 
     private void verifyOrderIsCompleted(String orderId) throws IllegalArgumentException {
