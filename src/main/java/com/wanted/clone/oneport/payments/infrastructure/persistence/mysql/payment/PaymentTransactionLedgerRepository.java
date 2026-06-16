@@ -2,6 +2,7 @@ package com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.payme
 
 import com.wanted.clone.oneport.payments.application.port.out.repository.PaymentLedgerRepository;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentLedger;
+import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -25,6 +26,11 @@ public class PaymentTransactionLedgerRepository implements PaymentLedgerReposito
     public PaymentLedger findOneByTransactionIdDesc(String paymentKey) {
         return jpaPaymentLedgerRepository.findTopByTransactionIdOrderByIdDesc(paymentKey)
             .orElseThrow(() -> new NullPointerException("findOneByPaymentKeyDesc ::: Not found Payment Transaction"));
+    }
+
+    @Override
+    public boolean existsByTransactionIdAndPaymentStatus(String paymentKey, PaymentStatus paymentStatus) {
+        return jpaPaymentLedgerRepository.existsByTransactionIdAndPaymentStatus(paymentKey, paymentStatus);
     }
 
     @Override

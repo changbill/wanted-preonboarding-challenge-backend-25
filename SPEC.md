@@ -39,6 +39,17 @@ com.wanted.clone.oneport
 - `CancelService`: 결제 취소, 취소 원장 저장
 - `PgWidgetService`: PG widget adapter 선택, template 경로 반환
 
+### 결제/취소 규칙
+
+- 같은 주문과 같은 `paymentKey`의 결제 승인 재요청은 성공으로 반환한다.
+- 이미 결제된 주문에 다른 `paymentKey`로 승인 요청이 들어오면 `PaymentRuleViolationException`을 반환한다.
+- 이미 `DONE` 원장이 있는 `paymentKey` 승인 요청은 PG 호출 전에 거부한다.
+- 주문 결제 완료, 전체 취소, 부분 취소 상태 전이는 `Order` 도메인 메서드에서 처리한다.
+- 부분 취소 시 선택된 주문 상품만 `ORDER_CANCELLED`로 바꾸고 주문은 `ORDER_PARTIAL_CANCELLED`가 된다.
+- 모든 주문 상품이 취소되면 주문은 `ORDER_CANCELLED`가 된다.
+- 취소 가능 금액보다 큰 취소 요청은 `PaymentRuleViolationException`으로 거부한다.
+- 웹 계층은 `PaymentRuleViolationException`을 HTTP 400 `ErrorResponse`로 반환한다.
+
 ### PG 선택
 
 - `PaymentAPIs.provider()`와 `PgWidget.provider()`가 지원 `PgCorp`를 반환한다.
@@ -62,10 +73,12 @@ com.wanted.clone.oneport
 - 주문 컨트롤러 REST Docs 테스트
 - PG adapter/widget 선택 테스트
 - `PgCorp.from()` 테스트
+- 결제 승인 idempotency 테스트
+- 주문 취소 상태 전이 테스트
+- 취소 가능 금액 검증 테스트
 
 ## 제한
 
-- 결제 승인/취소 idempotency가 없다.
 - 주문/결제 동시성 제어가 없다.
 - Toss 설정이 외부화되어 있지 않다.
 - JPA schema 정합성 검증이 남아 있다.
