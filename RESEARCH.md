@@ -23,7 +23,11 @@
 
 - 결제 취소 idempotency 규칙은 아직 별도로 정의되어 있지 않다.
 - Toss 설정은 `@ConfigurationProperties`로 외부화했고 secret은 환경변수로 주입할 수 있다.
-- JPA entity와 `create_schema.sql`의 ID/PK 구조가 다를 수 있다.
+- `create_schema.sql`의 `order_items.order_id`는 JPA `String` FK와 맞게 `VARCHAR(255)`로 둔다.
+- `order_items` PK는 JPA `PurchaseOrderJpaId(orderId, itemIdx)`와 맞게 `(order_id, item_idx)`로 둔다.
+- `card_payment` SQL table/PK는 JPA `CardPaymentJpaEntity`와 맞게 `card_payment(payment_key)`로 둔다.
+- dev DB는 Docker init SQL로 schema를 만들고 JPA `ddl-auto=validate`로 매핑 정합성만 검증한다.
+- test DB는 H2 isolated schema 생성을 위해 `ddl-auto=create-drop`을 유지한다.
 - H2 테스트만으로 MySQL lock 동작을 검증할 수 없다.
 - 외부 PG API 호출 중 트랜잭션이 주문 row lock을 보유한다.
 - 결제 승인/취소 API는 중복 호출 부작용이 클 수 있으므로 애플리케이션 레벨 자동 retry는 도입하지 않는다. 현재는 OkHttp의 연결 실패 재시도(`retryOnConnectionFailure`)만 설정으로 제어한다.
