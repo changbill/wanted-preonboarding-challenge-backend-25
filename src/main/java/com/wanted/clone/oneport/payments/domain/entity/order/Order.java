@@ -1,7 +1,5 @@
 package com.wanted.clone.oneport.payments.domain.entity.order;
 
-import com.wanted.clone.oneport.payments.domain.exception.PaymentRuleViolationException;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,32 +10,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-@Entity
-@Table(name = "purchase_order")
 @AllArgsConstructor
 @Setter
 @Getter
 public class Order {
-    @Id
-    @Column(name = "order_id")
     private String orderId;
 
     private String name;
 
-    @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "payment_id")
     private String paymentId;
 
-    @Column(name = "total_price")
     private int totalPrice;
 
-    @Column(name = "order_state")
-    @Convert(converter = OrderStatusConverter.class)
     private OrderStatus status;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
     protected Order() {

@@ -1,8 +1,8 @@
 package com.wanted.clone.oneport.payments.infrastructure.persistence.mysql;
 
-import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentLedger;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentMethod;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentStatus;
+import com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.entity.payment.PaymentLedgerJpaEntity;
 import com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.payment.JpaPaymentLedgerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -25,18 +25,21 @@ public class PaymentLedgerRepositoryTests {
     @Test
     public void save_true_PaymentLedger() throws Exception {
         // Given
-        PaymentLedger paymentInfo = PaymentLedger.builder()
-            .id(1)
-            .transactionId("")
-            .method(PaymentMethod.CARD)
-            .paymentStatus(PaymentStatus.DONE)
-            .totalAmount(3400)
-            .balanceAmount(3400)
-            .canceledAmount(0)
-            .build();
+        PaymentLedgerJpaEntity paymentInfo = new PaymentLedgerJpaEntity(
+                1,
+                null,
+                null,
+                "",
+                PaymentMethod.CARD,
+                PaymentStatus.DONE,
+                3400,
+                3400,
+                0,
+                0
+        );
 
         // When
-        PaymentLedger result = jpaPaymentLedgerRepository.save(paymentInfo);
+        PaymentLedgerJpaEntity result = jpaPaymentLedgerRepository.save(paymentInfo);
 
         // Then
         assertThat(result).usingRecursiveComparison()

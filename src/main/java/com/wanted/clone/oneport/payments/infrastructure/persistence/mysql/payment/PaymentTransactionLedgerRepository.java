@@ -2,7 +2,7 @@ package com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.payme
 
 import com.wanted.clone.oneport.payments.application.port.out.repository.PaymentLedgerRepository;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentLedger;
-import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentStatus;
+import com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.mapper.PaymentPersistenceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -19,12 +19,14 @@ public class PaymentTransactionLedgerRepository implements PaymentLedgerReposito
     @Override
     public List<PaymentLedger> findAllByTransactionId(String paymentKey) {
         return jpaPaymentLedgerRepository.findByTransactionId(paymentKey)
+            .map(entities -> entities.stream().map(PaymentPersistenceMapper::toDomain).toList())
             .orElseThrow(() -> new NullPointerException("findAllByPaymentKey ::: Not found Payment Transactions"));
     }
 
     @Override
     public PaymentLedger findOneByTransactionIdDesc(String paymentKey) {
         return jpaPaymentLedgerRepository.findTopByTransactionIdOrderByIdDesc(paymentKey)
+            .map(PaymentPersistenceMapper::toDomain)
             .orElseThrow(() -> new NullPointerException("findOneByPaymentKeyDesc ::: Not found Payment Transaction"));
     }
 
@@ -35,7 +37,7 @@ public class PaymentTransactionLedgerRepository implements PaymentLedgerReposito
 
     @Override
     public void save(PaymentLedger paymentLedgerInfo) {
-        jpaPaymentLedgerRepository.save(paymentLedgerInfo);
+        jpaPaymentLedgerRepository.save(PaymentPersistenceMapper.toJpaEntity(paymentLedgerInfo));
     }
 
     @Override

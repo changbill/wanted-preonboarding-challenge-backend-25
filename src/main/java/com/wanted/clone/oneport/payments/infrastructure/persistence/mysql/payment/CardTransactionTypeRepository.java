@@ -3,6 +3,7 @@ package com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.payme
 import com.wanted.clone.oneport.payments.application.port.out.repository.TransactionTypeRepository;
 import com.wanted.clone.oneport.payments.domain.entity.payment.TransactionType;
 import com.wanted.clone.oneport.payments.domain.entity.payment.card.CardPayment;
+import com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.mapper.PaymentPersistenceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -16,11 +17,12 @@ public class CardTransactionTypeRepository implements TransactionTypeRepository 
     @Override
     public CardPayment findById(String paymentKey) {
         return jpaCardPaymentRepository.findById(paymentKey)
+            .map(PaymentPersistenceMapper::toDomain)
             .orElseThrow(() -> new NoSuchElementException(String.format("CardPayment with key '%s' not found", paymentKey)));
     }
 
     @Override
     public void save(TransactionType paymentDetailInfo) {
-        jpaCardPaymentRepository.save((CardPayment) paymentDetailInfo);
+        jpaCardPaymentRepository.save(PaymentPersistenceMapper.toJpaCardPayment(paymentDetailInfo));
     }
 }
