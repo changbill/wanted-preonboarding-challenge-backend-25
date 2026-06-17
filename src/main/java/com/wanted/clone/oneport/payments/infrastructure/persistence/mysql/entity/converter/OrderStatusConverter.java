@@ -1,11 +1,10 @@
-package com.wanted.clone.oneport.payments.domain.entity.order;
+package com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.entity.converter;
 
+import com.wanted.clone.oneport.payments.domain.entity.order.OrderStatus;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import lombok.extern.slf4j.Slf4j;
 
 @Converter(autoApply = true)
-@Slf4j
 public class OrderStatusConverter implements AttributeConverter<OrderStatus, String> {
     @Override
     public String convertToDatabaseColumn(OrderStatus orderStatus) {
@@ -13,7 +12,7 @@ public class OrderStatusConverter implements AttributeConverter<OrderStatus, Str
     }
 
     @Override
-    public OrderStatus convertToEntityAttribute(String s) {
-        return OrderStatus.valueOf(s);
+    public OrderStatus convertToEntityAttribute(String status) {
+        return OrderStatus.valueOf(status);
     }
 }

@@ -1,8 +1,8 @@
 package com.wanted.clone.oneport.payments.domain.entity.settlements;
 
 import com.wanted.clone.oneport.payments.domain.entity.payment.*;
-import com.wanted.clone.oneport.payments.domain.entity.payment.converter.PaymentMethodConverter;
-import com.wanted.clone.oneport.payments.domain.entity.payment.converter.PaymentStatusConverter;
+import com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.entity.converter.PaymentMethodConverter;
+import com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.entity.converter.PaymentStatusConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

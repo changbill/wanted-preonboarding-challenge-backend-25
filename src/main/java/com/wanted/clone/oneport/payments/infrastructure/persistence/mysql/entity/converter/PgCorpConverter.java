@@ -1,4 +1,4 @@
-package com.wanted.clone.oneport.payments.domain.entity.payment.converter;
+package com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.entity.converter;
 
 import com.wanted.clone.oneport.payments.domain.entity.payment.PgCorp;
 import jakarta.persistence.AttributeConverter;

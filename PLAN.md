@@ -82,3 +82,20 @@
 - [ ] 상태 전이 도메인 테스트 추가
 - [ ] ArchUnit 의존 규칙 강화
 - [ ] REST Docs/OpenAPI 생성 테스트 정리
+
+## phase-04 완료 기록: JPA 엔티티와 도메인 모델 분리
+
+- [x] `Order`, `OrderItem`, `PurchaseOrderId`, `PaymentLedger`, `CardPayment`, `TransactionType`에서 JPA 어노테이션과 persistence import 제거
+- [x] `infrastructure.persistence.mysql.entity` 하위에 주문, 주문상품, 결제 원장, 카드 결제 JPA 엔티티 추가
+- [x] JPA converter를 persistence 패키지로 이동하고 기존 domain converter 제거
+- [x] 도메인 모델과 JPA 엔티티 간 `OrderPersistenceMapper`, `PaymentPersistenceMapper` 추가
+- [x] repository adapter에서 조회 결과를 도메인 모델로 변환하고 저장 입력을 JPA 엔티티로 변환
+- [x] JPA repository slice 테스트를 persistence entity 기준으로 조정
+- [x] 도메인 JPA 의존 금지 ArchUnit 테스트 추가
+- [x] 도메인-JPA mapper 왕복 단위 테스트 추가
+- [x] `.\gradlew.bat test` 통과
+
+남은 위험:
+
+- `PaymentSettlements`는 phase-04 핵심 대상 밖이라 아직 JPA entity 형태로 domain 패키지에 남아 있다.
+- `domain.entity` 패키지명 자체는 기존 호출부 호환을 위해 유지했다. 전체 `domain.model` 재배치는 별도 범위로 다룬다.

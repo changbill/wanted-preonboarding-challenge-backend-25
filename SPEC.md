@@ -84,3 +84,16 @@ com.wanted.clone.oneport
   - 계획 체크 변경: `PLAN.md`
 - 검증은 기본 `.\gradlew.bat test` 하나로 한다.
 - PR은 `gh pr create --base master --head {branch}`로 만든다.
+
+## Persistence 모델 분리
+
+- `Order`, `OrderItem`, `PurchaseOrderId`, `PaymentLedger`, `CardPayment`, `TransactionType`는 JPA 어노테이션과 persistence import가 없는 도메인 모델이다.
+- MySQL JPA 매핑은 `infrastructure.persistence.mysql.entity` 하위의 `PurchaseOrderJpaEntity`, `OrderItemJpaEntity`, `PaymentLedgerJpaEntity`, `CardPaymentJpaEntity`가 담당한다.
+- JPA enum converter는 `infrastructure.persistence.mysql.entity.converter` 하위에 둔다.
+- repository adapter는 `OrderPersistenceMapper`, `PaymentPersistenceMapper`로 JPA entity와 도메인 모델을 변환한다.
+- application port와 service는 저장소 구현체의 JPA entity를 직접 다루지 않는다.
+- 검증은 핵심 도메인 모델 JPA 의존 금지 ArchUnit 테스트와 주문/결제 mapper 왕복 테스트로 수행한다.
+
+## 추가 제한사항
+
+- `PaymentSettlements`는 아직 JPA entity 형태로 domain 패키지에 남아 있다.
