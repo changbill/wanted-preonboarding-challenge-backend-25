@@ -17,6 +17,17 @@ Spring Boot 기반 PG 통합 결제 예제다. 현재 PG adapter는 Toss 중심�
 
 애플리케이션 실행 전 MySQL이 필요하면 `docker-compose.yml`을 사용한다.
 
+### Toss 설정
+
+Toss API 설정은 환경변수로 주입할 수 있다. 값을 주입하지 않으면 `application.yml`의 기본값을 사용한다.
+
+- `TOSS_PAYMENTS_BASE_URL`
+- `TOSS_PAYMENTS_SECRET_KEY`
+- `TOSS_PAYMENTS_CONNECT_TIMEOUT_SECONDS`
+- `TOSS_PAYMENTS_WRITE_TIMEOUT_SECONDS`
+- `TOSS_PAYMENTS_READ_TIMEOUT_SECONDS`
+- `TOSS_PAYMENTS_RETRY_ON_CONNECTION_FAILURE`
+
 ## 구조
 
 ```text

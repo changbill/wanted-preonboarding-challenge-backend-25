@@ -7,6 +7,15 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
 
+pg:
+  tosspayments:
+    base-url: ${TOSS_PAYMENTS_BASE_URL:https://api.tosspayments.com/v1/}
+    secret-key: ${TOSS_PAYMENTS_SECRET_KEY:test_sk_0RnYX2w532257LzwRYBK3NeyqApQ}
+    connect-timeout-seconds: ${TOSS_PAYMENTS_CONNECT_TIMEOUT_SECONDS:20}
+    write-timeout-seconds: ${TOSS_PAYMENTS_WRITE_TIMEOUT_SECONDS:60}
+    read-timeout-seconds: ${TOSS_PAYMENTS_READ_TIMEOUT_SECONDS:60}
+    retry-on-connection-failure: ${TOSS_PAYMENTS_RETRY_ON_CONNECTION_FAILURE:true}
+
 ---
 spring:
   config:
@@ -27,11 +36,6 @@ spring:
         globally_quoted_identifiers: false
         format_sql: true     # 쿼리 로그 포맷 (정렬)
         show_sql: true       # 쿼리 로그 출력
-
-pg:
-  tosspayments:
-    baseUrl: "https://api.tosspayments.com/"
-    privateKey: "test_sk_0RnYX2w532257LzwRYBK3NeyqApQ"
 
 logging:
   level:

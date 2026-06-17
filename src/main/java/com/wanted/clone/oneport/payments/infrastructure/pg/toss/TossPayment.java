@@ -1,5 +1,6 @@
 package com.wanted.clone.oneport.payments.infrastructure.pg.toss;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wanted.clone.oneport.payments.application.command.ApprovePaymentCommand;
 import com.wanted.clone.oneport.payments.application.command.CancelPaymentCommand;
 import com.wanted.clone.oneport.payments.application.port.out.pg.PaymentAPIs;
@@ -7,11 +8,13 @@ import com.wanted.clone.oneport.payments.application.result.PaymentApprovalResul
 import com.wanted.clone.oneport.payments.application.result.PaymentCancelResult;
 import com.wanted.clone.oneport.payments.application.result.PaymentSettlementResult;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PgCorp;
+import com.wanted.clone.oneport.payments.infrastructure.pg.PgPaymentGatewayException;
 import com.wanted.clone.oneport.payments.infrastructure.pg.toss.request.TossApproveMessage;
 import com.wanted.clone.oneport.payments.infrastructure.pg.toss.request.TossCancelMessage;
 import com.wanted.clone.oneport.payments.infrastructure.pg.toss.response.TossApproveResponseMessage;
 import com.wanted.clone.oneport.payments.infrastructure.pg.toss.response.TossCancelResponseMessage;
 import lombok.RequiredArgsConstructor;
+import okhttp3.ResponseBody;
 import org.springframework.stereotype.Component;
 import retrofit2.Response;
 
@@ -23,6 +26,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TossPayment implements PaymentAPIs {
     private final TossPaymentAPIs tossClient;
+    private final ObjectMapper objectMapper;
 
     @Override
     public PgCorp provider() {
@@ -37,7 +41,7 @@ public class TossPayment implements PaymentAPIs {
             return Objects.requireNonNull(response.body())
                     .toCommonMessage();
 
-        throw new IOException(response.message());
+        throw toPaymentGatewayException(response);
     }
 
     @Override
@@ -52,11 +56,29 @@ public class TossPayment implements PaymentAPIs {
             return Objects.requireNonNull(response.body()).toCommonMessage();
         }
 
-        throw new IOException(response.message());
+        throw toPaymentGatewayException(response);
     }
 
     @Override
     public List<PaymentSettlementResult> requestPaymentSettlement() throws IOException {
         return null;
+    }
+
+    private PgPaymentGatewayException toPaymentGatewayException(Response<?> response) throws IOException {
+        ResponseBody errorBody = response.errorBody();
+        if (errorBody == null) {
+            return new PgPaymentGatewayException(response.code(), null, response.message());
+        }
+
+        String errorJson = errorBody.string();
+        try {
+            TossErrorResponse errorResponse = objectMapper.readValue(errorJson, TossErrorResponse.class);
+            String message = errorResponse.getMessage() == null || errorResponse.getMessage().isBlank()
+                    ? response.message()
+                    : errorResponse.getMessage();
+            return new PgPaymentGatewayException(response.code(), errorResponse.getCode(), message);
+        } catch (IOException ex) {
+            return new PgPaymentGatewayException(response.code(), null, response.message());
+        }
     }
 }
