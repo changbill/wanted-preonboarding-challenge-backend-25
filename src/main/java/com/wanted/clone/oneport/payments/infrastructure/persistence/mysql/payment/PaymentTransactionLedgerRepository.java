@@ -31,6 +31,11 @@ public class PaymentTransactionLedgerRepository implements PaymentLedgerReposito
     }
 
     @Override
+    public boolean existsByTransactionIdAndPaymentStatus(String paymentKey, PaymentStatus paymentStatus) {
+        return jpaPaymentLedgerRepository.existsByTransactionIdAndPaymentStatus(paymentKey, paymentStatus);
+    }
+
+    @Override
     public void save(PaymentLedger paymentLedgerInfo) {
         jpaPaymentLedgerRepository.save(PaymentPersistenceMapper.toJpaEntity(paymentLedgerInfo));
     }

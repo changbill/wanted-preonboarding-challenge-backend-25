@@ -36,6 +36,12 @@ description: `/run {phase}` 요청을 받아 기획, 구현, 검증, 수정, 커
 - `_workspace/codex/{phase}/implementation.md`
 - `_workspace/codex/{phase}/verification.md`
 
+## File Reading
+
+- 한글 문서는 PowerShell에서 `Get-Content -Encoding UTF8 -LiteralPath ...`로 읽는다.
+- 긴 문서는 전체 출력보다 `rg` 검색 후 필요한 구간만 읽는다.
+- `rg` 검색은 `src/main/resources/static/**` 같은 대형 생성/정적 파일을 제외한다.
+
 ## PR Policy
 
 - phase 완료 후 현재 `feature/...` 브랜치를 `master`로 병합하기 위한 PR을 생성한다.

@@ -30,6 +30,12 @@
 .\gradlew.bat test
 ```
 
+## 파일 읽기 규칙
+
+- 한글 문서는 PowerShell에서 `Get-Content -Encoding UTF8 -LiteralPath ...`로 읽는다.
+- 긴 문서는 전체 출력보다 `rg` 검색 후 필요한 구간만 읽는다.
+- `rg` 검색은 `src/main/resources/static/**` 같은 대형 생성/정적 파일을 제외한다.
+
 ## 핵심 파일
 
 - `.agents/skills/codex-orchestrator/SKILL.md`

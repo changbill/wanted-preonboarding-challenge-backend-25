@@ -22,7 +22,8 @@ public enum OrderStatus {
     SHIPPING_PREPARE("04"),
     SHIPPING("05"),
     SHIPPING_COMPLETED("06"),
-    PURCHASE_DECISION("07");
+    PURCHASE_DECISION("07"),
+    ORDER_PARTIAL_CANCELLED("08");
 
     private final String code;
 
