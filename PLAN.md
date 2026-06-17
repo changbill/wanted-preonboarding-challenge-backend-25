@@ -49,13 +49,13 @@
 
 ## 5단계: 결제/취소 락 적용
 
-- [ ] `OrderRepository` lock 조회 포트 추가
-- [ ] `JpaOrderRepository.findByIdForUpdate` 비관적 쓰기 락 추가
-- [ ] 결제 승인 유스케이스에서 주문 row lock 적용
-- [ ] 결제 취소 유스케이스에서 주문 row lock 적용
-- [ ] 외부 PG API 호출 전 `PAYMENT_APPROVING` 진행 상태 선점 방식 검토
-- [ ] lock wait timeout/deadlock 예외 처리 정책 정의
-- [ ] 결제 원장 unique constraint 추가
+- [x] `OrderRepository` lock 조회 포트 추가
+- [x] `JpaOrderRepository.findByIdForUpdate` 비관적 쓰기 락 추가
+- [x] 결제 승인 유스케이스에서 주문 row lock 적용
+- [x] 결제 취소 유스케이스에서 주문 row lock 적용
+- [x] 외부 PG API 호출 전 `PAYMENT_APPROVING` 진행 상태 선점 방식 검토
+- [x] lock wait timeout/deadlock 예외 처리 정책 정의
+- [x] 결제 원장 unique constraint 추가
 
 ## 6단계: 설정과 외부 연동 정리
 
@@ -99,3 +99,20 @@
 
 - `PaymentSettlements`는 phase-04 핵심 대상 밖이라 아직 JPA entity 형태로 domain 패키지에 남아 있다.
 - `domain.entity` 패키지명 자체는 기존 호출부 호환을 위해 유지했다. 전체 `domain.model` 재배치는 별도 범위로 다룬다.
+
+## phase-05 완료 기록: 결제/취소 락 적용
+
+- [x] `OrderRepository.findByIdForUpdate(String)` 포트를 추가하고 JPA adapter에 연결
+- [x] `JpaOrderRepository.findByIdForUpdate`에 `PESSIMISTIC_WRITE` lock 적용
+- [x] 결제 승인 유스케이스가 주문을 lock 조회하고 승인 성공 시 주문 상태를 저장하도록 변경
+- [x] 결제 취소 유스케이스가 주문을 lock 조회하고 취소 성공 시 주문 상태를 저장하도록 변경
+- [x] 현재 주문 상태 모델에 `PAYMENT_APPROVING` 진행 상태가 없어 별도 선점 상태 도입은 보류
+- [x] lock wait timeout/deadlock 계열 예외를 HTTP 409 `ErrorResponse`로 변환
+- [x] 결제 원장 중복 방지를 위해 `tx_id`, `method`, `payment_status` unique constraint 추가
+- [x] 승인/취소 서비스 단위 테스트에 lock 조회와 주문 저장 검증 추가
+- [x] `.\gradlew.bat test` 통과
+
+남은 위험:
+
+- H2 기반 테스트는 SQL lock wait 동작을 MySQL과 동일하게 보장하지 않는다. 실제 lock 대기/timeout 재현 테스트는 MySQL 통합 테스트 환경에서 보강해야 한다.
+- 외부 PG API 호출을 트랜잭션 안에서 수행하므로 주문 row lock 보유 시간이 PG 응답 시간에 영향을 받는다. 별도 진행 상태 선점 모델은 주문 상태 설계가 확장될 때 다시 검토한다.

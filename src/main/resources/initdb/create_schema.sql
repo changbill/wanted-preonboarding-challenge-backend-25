@@ -51,7 +51,7 @@ CREATE TABLE `payment_ledger`
     `created_at`      DATETIME DEFAULT NOW() NOT NULL,
     `updated_at`      DATETIME DEFAULT NOW() NOT NUll,
     PRIMARY KEY (id),
-    UNIQUE KEY (id, tx_id, method, payment_status)
+    UNIQUE KEY `uk_payment_ledger_tx_method_status` (tx_id, method, payment_status)
 );
 
 CREATE TABLE `card_payment_ledger`

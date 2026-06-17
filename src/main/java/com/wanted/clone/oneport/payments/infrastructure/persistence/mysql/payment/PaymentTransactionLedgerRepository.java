@@ -2,6 +2,7 @@ package com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.payme
 
 import com.wanted.clone.oneport.payments.application.port.out.repository.PaymentLedgerRepository;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentLedger;
+import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentStatus;
 import com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.mapper.PaymentPersistenceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;

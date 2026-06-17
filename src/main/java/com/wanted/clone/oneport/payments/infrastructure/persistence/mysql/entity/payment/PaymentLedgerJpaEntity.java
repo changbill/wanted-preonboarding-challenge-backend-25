@@ -13,13 +13,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "payment_ledger")
+@Table(
+    name = "payment_ledger",
+    uniqueConstraints = @UniqueConstraint(
+        name = "uk_payment_ledger_tx_method_status",
+        columnNames = {"tx_id", "method", "payment_status"}
+    )
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
