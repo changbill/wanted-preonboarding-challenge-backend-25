@@ -101,6 +101,15 @@ class OrderTests {
         );
     }
 
+    @Test
+    void isPaidWith_MatchesCurrentPaymentId() throws Exception {
+        Order order = orderWithItems();
+        order.orderPaymentFullFill("payment-key-1");
+
+        Assertions.assertTrue(order.isPaidWith("payment-key-1"));
+        Assertions.assertFalse(order.isPaidWith("payment-key-2"));
+    }
+
     private Order orderWithItems() throws Exception {
         return new Order("order-1", "buyer", "010", List.of(
             orderItem(1),
