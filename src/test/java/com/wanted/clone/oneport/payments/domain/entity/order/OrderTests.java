@@ -22,6 +22,29 @@ class OrderTests {
     }
 
     @Test
+    void orderPaymentFullFill_NotOrderCompleted_ThrowsException() throws Exception {
+        Order order = orderWithItems();
+        order.orderPaymentFullFill("payment-key-1");
+
+        Assertions.assertThrows(
+            PaymentRuleViolationException.class,
+            () -> order.orderPaymentFullFill("payment-key-2")
+        );
+    }
+
+    @Test
+    void orderAllCancel_PaymentFulfilled_ChangesOrderAndItemsToCancelled() throws Exception {
+        Order order = orderWithItems();
+        order.orderPaymentFullFill("payment-key-1");
+
+        order.orderAllCancel();
+
+        Assertions.assertEquals(OrderStatus.ORDER_CANCELLED, order.getStatus());
+        Assertions.assertTrue(order.getItems().stream()
+            .allMatch(item -> item.getState().equals(OrderStatus.ORDER_CANCELLED)));
+    }
+
+    @Test
     void orderCancel_SelectedItem_ChangesOrderToPartialCancelled() throws Exception {
         Order order = orderWithItems();
         order.orderPaymentFullFill("payment-key-1");
@@ -41,6 +64,30 @@ class OrderTests {
         order.orderCancel(new int[]{1, 2});
 
         Assertions.assertEquals(OrderStatus.ORDER_CANCELLED, order.getStatus());
+    }
+
+    @Test
+    void orderCancel_RemainingItemAfterPartialCancel_ChangesOrderToCancelled() throws Exception {
+        Order order = orderWithItems();
+        order.orderPaymentFullFill("payment-key-1");
+        order.orderCancel(new int[]{1});
+
+        order.orderCancel(new int[]{2});
+
+        Assertions.assertEquals(OrderStatus.ORDER_CANCELLED, order.getStatus());
+        Assertions.assertTrue(order.getItems().stream()
+            .allMatch(item -> item.getState().equals(OrderStatus.ORDER_CANCELLED)));
+    }
+
+    @Test
+    void orderCancel_PurchaseDecisionOrder_ThrowsException() throws Exception {
+        Order order = orderWithItems();
+        order.setStatus(OrderStatus.PURCHASE_DECISION);
+
+        Assertions.assertThrows(
+            PaymentRuleViolationException.class,
+            () -> order.orderCancel(new int[]{1})
+        );
     }
 
     @Test

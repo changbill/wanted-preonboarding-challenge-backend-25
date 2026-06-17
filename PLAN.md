@@ -45,7 +45,7 @@
 - [x] repository adapter에서 도메인 모델 저장 전 JPA entity로 변환
 - [x] 도메인 모델이 JPA, Spring, Toss, web 타입을 참조하지 않도록 정리
 - [x] JPA entity는 상태 전이 규칙 없이 persistence 매핑 책임만 가지도록 정리
-- [ ] 분리 후 도메인 상태 전이 단위 테스트 추가
+- [x] 분리 후 도메인 상태 전이 단위 테스트 추가
 
 ## 5단계: 결제/취소 락 적용
 

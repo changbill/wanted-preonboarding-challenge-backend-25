@@ -15,6 +15,7 @@ JPA 엔티티와 핵심 도메인 모델을 분리했다. 주문, 주문상품, 
 - repository adapter에서 persistence entity와 domain model 변환 적용
 - JPA repository 테스트를 persistence entity 기준으로 수정
 - 도메인 JPA 의존 금지 ArchUnit 테스트와 mapper 왕복 테스트 추가
+- 분리된 `Order` 도메인 모델의 결제 승인, 전체 취소, 부분 취소, 취소 불가 상태 전이 단위 테스트 보강
 
 ## 범위 밖
 
