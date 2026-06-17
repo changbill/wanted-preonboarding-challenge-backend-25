@@ -32,9 +32,11 @@
 - 외부 PG API 호출 중 트랜잭션이 주문 row lock을 보유한다.
 - 결제 승인/취소 API는 중복 호출 부작용이 클 수 있으므로 애플리케이션 레벨 자동 retry는 도입하지 않는다. 현재는 OkHttp의 연결 실패 재시도(`retryOnConnectionFailure`)만 설정으로 제어한다.
 - Toss Retrofit error body는 `{code, message}` 형태를 공통 `PgPaymentGatewayException`으로 변환하고 웹 계층에서 HTTP 502로 반환한다.
+- H2 기반 단위 테스트에서는 MySQL lock wait/deadlock을 재현하지 않는다. 대신 application service가 lock 조회 포트를 먼저 호출하고 lock 실패를 PG 호출 전 전파하는지, JPA repository method가 `PESSIMISTIC_WRITE` 계약을 갖는지 검증한다.
+- `PaymentSettlements`는 아직 JPA entity 형태로 domain 패키지에 남아 있으므로 ArchUnit의 순수 domain 의존 규칙은 핵심 order/payment domain 모델에 먼저 적용한다.
 
 ## 다음 조사 우선순위
 
 1. 결제 취소 idempotency 규칙
 2. 주문 row 기준 비관적 락의 MySQL 통합 테스트
-3. JPA schema 정합성
+3. `PaymentSettlements` domain/JPA 분리

@@ -87,10 +87,17 @@ com.wanted.clone.oneport
 - 주문 컨트롤러 REST Docs 테스트
 - PG adapter/widget 선택 테스트
 - Toss adapter error body 변환 테스트
+- Toss adapter 승인/취소 성공 응답 MockWebServer 테스트
 - `PgCorp.from()` 테스트
 - 결제 승인 idempotency 테스트
+- 결제 승인 실패 응답, lock 실패 전파 테스트
+- 결제 취소 성공, 금액 검증 실패, lock 실패 전파 테스트
 - 주문 취소 상태 전이 테스트
+- 주문 payment id 일치성 도메인 테스트
 - 취소 가능 금액 검증 테스트
+- `findByIdForUpdate`의 `PESSIMISTIC_WRITE` lock 계약 테스트
+- application/domain 의존 방향 ArchUnit 테스트
+- REST Docs/OpenAPI order 생성 snippet 이름은 `order-new-success`, `order-new-validation-error`를 사용한다.
 
 ## 제한
 

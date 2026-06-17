@@ -52,7 +52,7 @@ public class OrderControllerDocTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(requestJson))
             .andExpect(status().isOk())
-            .andDo(document("CorrectRequestMessage",
+            .andDo(document("order-new-success",
                     PayloadDocumentation.requestFields(
                         PayloadDocumentation.fieldWithPath("orderer.name").description("주문자명")
                             .attributes((key("constraint").value("주문자명을 입력 해주세요."))),
@@ -88,7 +88,7 @@ public class OrderControllerDocTest {
             .andExpect(status().is4xxClientError())
             .andExpect(result -> Assertions.assertInstanceOf(MethodArgumentNotValidException.class, result.getResolvedException()))
             .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("ERROR"))
-            .andDo(document("ConstraintHasValueBlank")
+            .andDo(document("order-new-validation-error")
             );
     }
 

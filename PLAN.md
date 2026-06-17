@@ -73,12 +73,12 @@
 
 ## 8단계: 테스트와 아키텍처 검증 보강
 
-- [ ] 결제 승인 application service 단위 테스트 추가
-- [ ] 결제 취소 application service 단위 테스트 추가
-- [ ] 동일 주문 결제 승인 동시성 테스트 추가
-- [ ] 승인/취소 경합 동시성 테스트 추가
-- [ ] `findByIdForUpdate` lock 대기 테스트 추가
-- [ ] Toss adapter MockWebServer 테스트 추가
-- [ ] 상태 전이 도메인 테스트 추가
-- [ ] ArchUnit 의존 규칙 강화
-- [ ] REST Docs/OpenAPI 생성 테스트 정리
+- [x] 결제 승인 application service 단위 테스트 추가
+- [x] 결제 취소 application service 단위 테스트 추가
+- [x] 동일 주문 결제 승인 동시성 테스트 추가
+- [x] 승인/취소 경합 동시성 테스트 추가
+- [x] `findByIdForUpdate` lock 대기 테스트 추가
+- [x] Toss adapter MockWebServer 테스트 추가
+- [x] 상태 전이 도메인 테스트 추가
+- [x] ArchUnit 의존 규칙 강화
+- [x] REST Docs/OpenAPI 생성 테스트 정리
