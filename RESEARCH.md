@@ -22,15 +22,15 @@
 ## 남은 리스크
 
 - 결제 취소 idempotency 규칙은 아직 별도로 정의되어 있지 않다.
-- Toss secret과 base URL이 설정/코드에 고정되어 있다.
+- Toss 설정은 `@ConfigurationProperties`로 외부화했고 secret은 환경변수로 주입할 수 있다.
 - JPA entity와 `create_schema.sql`의 ID/PK 구조가 다를 수 있다.
 - H2 테스트만으로 MySQL lock 동작을 검증할 수 없다.
 - 외부 PG API 호출 중 트랜잭션이 주문 row lock을 보유한다.
+- 결제 승인/취소 API는 중복 호출 부작용이 클 수 있으므로 애플리케이션 레벨 자동 retry는 도입하지 않는다. 현재는 OkHttp의 연결 실패 재시도(`retryOnConnectionFailure`)만 설정으로 제어한다.
+- Toss Retrofit error body는 `{code, message}` 형태를 공통 `PgPaymentGatewayException`으로 변환하고 웹 계층에서 HTTP 502로 반환한다.
 
 ## 다음 조사 우선순위
 
 1. 결제 취소 idempotency 규칙
 2. 주문 row 기준 비관적 락의 MySQL 통합 테스트
-3. Toss 설정 외부화
-4. JPA schema 정합성
-5. Toss adapter MockWebServer 테스트
+3. JPA schema 정합성

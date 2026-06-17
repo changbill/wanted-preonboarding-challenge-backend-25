@@ -59,10 +59,10 @@
 
 ## 6단계: 설정과 외부 연동 정리
 
-- [ ] Toss base URL, secret key, timeout을 `@ConfigurationProperties`로 이동
-- [ ] secret 값을 환경변수 또는 profile별 설정으로 주입
-- [ ] Retrofit error body를 공통 PG 오류로 변환
-- [ ] 외부 API timeout/retry 정책 결정
+- [x] Toss base URL, secret key, timeout을 `@ConfigurationProperties`로 이동
+- [x] secret 값을 환경변수 또는 profile별 설정으로 주입
+- [x] Retrofit error body를 공통 PG 오류로 변환
+- [x] 외부 API timeout/retry 정책 결정
 
 ## 7단계: DB schema와 JPA 매핑 정합성 정리
 
