@@ -66,10 +66,10 @@
 
 ## 7단계: DB schema와 JPA 매핑 정합성 정리
 
-- [ ] `purchase_order.order_id` 타입과 `order_items.order_id` 타입 정합성 확인
-- [ ] `OrderItem` 복합키와 `create_schema.sql` PK 정의 정리
-- [ ] `card_payment` entity table name과 SQL table name 정합성 확인
-- [ ] `ddl-auto` 전략과 init SQL 사용 방식을 분리
+- [x] `purchase_order.order_id` 타입과 `order_items.order_id` 타입 정합성 확인
+- [x] `OrderItem` 복합키와 `create_schema.sql` PK 정의 정리
+- [x] `card_payment` entity table name과 SQL table name 정합성 확인
+- [x] `ddl-auto` 전략과 init SQL 사용 방식을 분리
 
 ## 8단계: 테스트와 아키텍처 검증 보강
 

@@ -72,6 +72,11 @@ com.wanted.clone.oneport
 - Toss secret key는 `TOSS_PAYMENTS_SECRET_KEY` 환경변수로 주입할 수 있다.
 - Toss Retrofit error body의 `code`, `message`는 공통 PG 예외로 변환한다.
 - MySQL persistence adapter와 JPA repository
+- `create_schema.sql`은 JPA entity 매핑 기준으로 `purchase_order.order_id`와 `order_items.order_id`를 `VARCHAR(255)`로 맞춘다.
+- `order_items` 기본키는 JPA embedded id와 같은 `(order_id, item_idx)`다.
+- 카드 결제 entity table은 `card_payment`, 기본키 column은 `payment_key`다.
+- dev profile은 Docker init SQL로 schema를 생성하고 JPA `ddl-auto=validate`로 검증한다.
+- test profile은 H2 테스트 격리를 위해 JPA `ddl-auto=create-drop`을 사용한다.
 - `payment_ledger`는 `tx_id`, `method`, `payment_status` 조합으로 중복 원장 저장을 제한한다.
 
 ## 테스트
@@ -92,7 +97,7 @@ com.wanted.clone.oneport
 - 주문 row lock은 JPA `PESSIMISTIC_WRITE`로 적용되어 있으나 H2 테스트만으로 MySQL lock wait 동작을 완전히 검증하지는 못한다.
 - 외부 PG API 호출은 현재 트랜잭션 내부에서 수행되어 주문 row lock 보유 시간이 PG 응답 시간에 영향을 받는다.
 - Toss 외부 API retry는 OkHttp의 연결 실패 재시도만 사용하며, 승인/취소 요청에 대한 애플리케이션 레벨 재시도는 하지 않는다.
-- JPA schema 정합성 검증이 남아 있다.
+- `payment_settlements` schema/entity 정리는 별도 단계로 남아 있다.
 
 ## Codex 하네스
 

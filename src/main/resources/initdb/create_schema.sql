@@ -20,8 +20,7 @@ CREATE TABLE `purchase_order`
 
 CREATE TABLE `order_items`
 (
-    `id`            INT                    NOT NULL COMMENT '주문 상세 ID' AUTO_INCREMENT,
-    `order_id`      BINARY(16)             NOT NULL COMMENT '전체 주문번호 - FK',
+    `order_id`      VARCHAR(255)           NOT NULL COMMENT '전체 주문번호 - FK',
     `item_idx`      INTEGER(10)            NOT NULL COMMENT '주문 상세번호',
     `product_id`    BINARY(16)             NOT NULL COMMENT '상품번호',
     `product_name`  VARCHAR(255)           NOT NULL COMMENT '상품명',
@@ -32,8 +31,9 @@ CREATE TABLE `order_items`
     `order_state`   VARCHAR(255)           NOT NULL COMMENT '개별 주문상태',
     `created_at`    DATETIME DEFAULT NOW() NOT NULL,
     `updated_at`    DATETIME DEFAULT NOW() NOT NUll,
-    PRIMARY KEY (id, item_idx),
-    UNIQUE KEY (order_id, item_idx, product_id)
+    PRIMARY KEY (order_id, item_idx),
+    UNIQUE KEY `uk_order_items_order_item_product` (order_id, item_idx, product_id),
+    CONSTRAINT `fk_order_items_purchase_order` FOREIGN KEY (order_id) REFERENCES purchase_order (order_id)
 );
 
 CREATE TABLE `payment_ledger`
@@ -54,17 +54,17 @@ CREATE TABLE `payment_ledger`
     UNIQUE KEY `uk_payment_ledger_tx_method_status` (tx_id, method, payment_status)
 );
 
-CREATE TABLE `card_payment_ledger`
+CREATE TABLE `card_payment`
 (
-    `tx_id`           VARCHAR(255) NOT NULL COMMENT '결제번호',
+    `payment_key`     VARCHAR(255) NOT NULL COMMENT '결제번호',
     `card_number`     VARCHAR(255) NOT NULL COMMENT '카드번호',
     `approve_no`      VARCHAR(10)  NOT NULL COMMENT '카드 승인 번호',
     `acquire_status`  VARCHAR(255) NOT NULL COMMENT '카드결제 매입 상태',
     `issuer_code`     VARCHAR(255) NULL COMMENT '카드 발급사 코드',
     `acquirer_code`   VARCHAR(255) NOT NULL COMMENT '카드 매입사 코드',
     `acquirer_status` VARCHAR(255) NOT NULL COMMENT '카드 결제의 상태',
-    PRIMARY KEY (tx_id),
-    UNIQUE KEY (tx_id, card_number, approve_no)
+    PRIMARY KEY (payment_key),
+    UNIQUE KEY `uk_card_payment_key_number_approve` (payment_key, card_number, approve_no)
 );
 
 CREATE TABLE `payment_settlements`

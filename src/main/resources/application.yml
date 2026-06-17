@@ -29,7 +29,7 @@ spring:
   # JPA 설정
   jpa:
     hibernate:
-      ddl-auto: create-drop # DB 초기화 전략 (none, create, create-drop, update, validate)
+      ddl-auto: validate # dev DB schema는 initdb/create_schema.sql로 생성하고 JPA는 매핑만 검증
     properties:
       hibernate:
         auto_quote_keyword: false
