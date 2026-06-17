@@ -1,6 +1,7 @@
 package com.wanted.clone.oneport.core.common;
 
 import com.wanted.clone.oneport.payments.domain.exception.UnsupportedPgCorpException;
+import com.wanted.clone.oneport.payments.domain.exception.PaymentRuleViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +39,13 @@ public class GlobalException extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public final ErrorResponse handleUnsupportedPgCorpException(UnsupportedPgCorpException ex, WebRequest request) {
         logger.error("BAD_REQUEST ::: [UnsupportedPgCorpException] ", ex);
+        return new ErrorResponse(null, ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PaymentRuleViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public final ErrorResponse handlePaymentRuleViolationException(PaymentRuleViolationException ex, WebRequest request) {
+        logger.error("BAD_REQUEST ::: [PaymentRuleViolationException] ", ex);
         return new ErrorResponse(null, ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

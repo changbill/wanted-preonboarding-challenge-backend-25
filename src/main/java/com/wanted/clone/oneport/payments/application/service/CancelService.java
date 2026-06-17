@@ -29,17 +29,14 @@ public class CancelService implements OrderCancelUseCase {
         PaymentLedger paymentInfo = paymentService.getLatestPaymentInfoOnlyOne(paymentKey);
         PaymentAPIs paymentAPIs = paymentService.selectPgAPI(paymentInfo.getPgCorpName());
 
-        if (wantedCancelOrder.isNotOrderStatusPurchaseDecision() &&
-                paymentInfo.isCancellableAmountGreaterThan(cancellationAmount)) {
-            if (command.hasItemIdx())
-                wantedCancelOrder.orderCancel(command.getItemIdxs());
-            else
-                wantedCancelOrder.orderAllCancel();
-            PaymentCancelResult response = paymentAPIs.requestPaymentCancel(paymentKey, command);
-            paymentLedgerRepository.save(response.toEntity());
-            return true;
-        }
+        paymentInfo.verifyCancellableAmount(cancellationAmount);
+        if (command.hasItemIdx())
+            wantedCancelOrder.orderCancel(command.getItemIdxs());
+        else
+            wantedCancelOrder.orderAllCancel();
 
-        throw new Exception("Not Enough CancellationAmount");
+        PaymentCancelResult response = paymentAPIs.requestPaymentCancel(paymentKey, command);
+        paymentLedgerRepository.save(response.toEntity(paymentInfo.getPgCorpName()));
+        return true;
     }
 }

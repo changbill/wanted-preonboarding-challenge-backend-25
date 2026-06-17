@@ -10,7 +10,9 @@ import com.wanted.clone.oneport.payments.application.result.PaymentApprovalResul
 import com.wanted.clone.oneport.payments.domain.entity.order.Order;
 import com.wanted.clone.oneport.payments.domain.entity.order.OrderStatus;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentLedger;
+import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentStatus;
 import com.wanted.clone.oneport.payments.domain.entity.payment.PgCorp;
+import com.wanted.clone.oneport.payments.domain.exception.PaymentRuleViolationException;
 import com.wanted.clone.oneport.payments.domain.exception.UnsupportedPgCorpException;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
@@ -50,13 +52,16 @@ public class PaymentService implements PaymentFullfillUseCase {
     @Override
     public String paymentApproved(ApprovePaymentCommand command) throws IOException {
         String orderId = command.getOrderId();
-        verifyOrderIsCompleted(orderId);
+        Order order = orderRepository.findById(orderId);
+        if (order.isPaidWith(command.getPaymentKey())) {
+            return "success";
+        }
+        verifyOrderIsPayable(order, command);
         PaymentAPIs paymentAPIs = selectPgAPI(command.getSelectedPgCorp());
         PaymentApprovalResult response = paymentAPIs.requestPaymentApprove(command);
 
         if (paymentAPIs.isPaymentApproved(response.getStatus().name())) {
-            Order completedOrder = orderRepository.findById(orderId);
-            completedOrder.orderPaymentFullFill(response.getTransactionId());
+            order.orderPaymentFullFill(response.getTransactionId());
             paymentLedgerRepository.save(response.toEntity(command.getSelectedPgCorp()));
 
             return "success";
@@ -76,10 +81,16 @@ public class PaymentService implements PaymentFullfillUseCase {
         return paymentAPIs;
     }
 
-    private void verifyOrderIsCompleted(String orderId) throws IllegalArgumentException {
-        OrderStatus status = orderRepository.findById(orderId).getStatus();
-        if (!status.equals(OrderStatus.ORDER_COMPLETED))
-            throw new IllegalArgumentException("Order is not completed || Order is already paymented");
+    private void verifyOrderIsPayable(Order order, ApprovePaymentCommand command) {
+        if (order.isPaymentFulfilled()) {
+            throw PaymentRuleViolationException.alreadyPaidOrder(command.getOrderId());
+        }
+        if (!order.getStatus().equals(OrderStatus.ORDER_COMPLETED)) {
+            throw PaymentRuleViolationException.notPayableOrder(command.getOrderId());
+        }
+        if (paymentLedgerRepository.existsByTransactionIdAndPaymentStatus(command.getPaymentKey(), PaymentStatus.DONE)) {
+            throw PaymentRuleViolationException.duplicatedPaymentKey(command.getPaymentKey());
+        }
     }
 
 }

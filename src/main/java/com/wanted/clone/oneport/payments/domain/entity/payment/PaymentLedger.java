@@ -3,6 +3,7 @@ package com.wanted.clone.oneport.payments.domain.entity.payment;
 import com.wanted.clone.oneport.payments.domain.entity.payment.converter.PaymentMethodConverter;
 import com.wanted.clone.oneport.payments.domain.entity.payment.converter.PaymentStatusConverter;
 import com.wanted.clone.oneport.payments.domain.entity.payment.converter.PgCorpConverter;
+import com.wanted.clone.oneport.payments.domain.exception.PaymentRuleViolationException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -51,6 +52,12 @@ public class PaymentLedger {
 
     public boolean isCancellableAmountGreaterThan(int cancellationAmount){
         return balanceAmount >= cancellationAmount;
+    }
+
+    public void verifyCancellableAmount(int cancellationAmount) {
+        if (!isCancellableAmountGreaterThan(cancellationAmount)) {
+            throw PaymentRuleViolationException.insufficientCancellableAmount(cancellationAmount, balanceAmount);
+        }
     }
 
 }

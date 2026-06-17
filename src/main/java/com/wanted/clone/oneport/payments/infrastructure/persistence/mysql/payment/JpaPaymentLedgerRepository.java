@@ -2,6 +2,7 @@ package com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.payme
 
 
 import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentLedger;
+import com.wanted.clone.oneport.payments.domain.entity.payment.PaymentStatus;
 import com.wanted.clone.oneport.payments.infrastructure.persistence.mysql.JpaBaseRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +14,6 @@ public interface JpaPaymentLedgerRepository extends JpaBaseRepository<PaymentLed
     Optional<List<PaymentLedger>> findByTransactionId(String paymentKey);
 
     Optional<PaymentLedger> findTopByTransactionIdOrderByIdDesc(String paymentKey);
+
+    boolean existsByTransactionIdAndPaymentStatus(String paymentKey, PaymentStatus paymentStatus);
 }
