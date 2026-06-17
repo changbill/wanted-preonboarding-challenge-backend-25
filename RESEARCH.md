@@ -14,19 +14,23 @@
 - 외부 입력의 `pgCorpName`은 `PgCorp.from(String)`에서 정규화한다.
 - 지원하지 않는 PG는 `UnsupportedPgCorpException`으로 거부하고 웹에서는 HTTP 400으로 응답한다.
 - singleton service에 요청별 PG adapter 상태를 필드로 저장하지 않는다.
+- 결제 승인과 취소는 같은 주문 row를 기준으로 경합하므로 application port에 lock 조회 계약을 두고 JPA adapter에서 `PESSIMISTIC_WRITE`를 적용한다.
+- 현재 주문 상태에는 `PAYMENT_APPROVING` 같은 진행 중 상태가 없다. 새 상태를 넣으면 상태 전이와 사용자 노출 의미가 커지므로 phase-05에서는 도입하지 않는다.
+- lock wait timeout/deadlock은 Spring의 lock 획득 실패 예외로 처리하고 웹 계층에서 HTTP 409로 응답한다.
+- 결제 원장 중복 방지는 `payment_ledger(tx_id, method, payment_status)` unique constraint로 둔다. 기존 `(id, tx_id, method, payment_status)` unique key는 auto increment id 때문에 중복 방지 효과가 없다.
 
 ## 남은 리스크
 
-- 결제 승인/취소 idempotency가 없다.
-- 동일 주문 결제/취소 동시성 제어가 없다.
+- 결제 취소 idempotency 규칙은 아직 별도로 정의되어 있지 않다.
 - Toss secret과 base URL이 설정/코드에 고정되어 있다.
 - JPA entity와 `create_schema.sql`의 ID/PK 구조가 다를 수 있다.
 - H2 테스트만으로 MySQL lock 동작을 검증할 수 없다.
+- 외부 PG API 호출 중 트랜잭션이 주문 row lock을 보유한다.
 
 ## 다음 조사 우선순위
 
-1. 결제/취소 idempotency와 unique constraint
-2. 주문 row 기준 비관적 락
+1. 결제 취소 idempotency 규칙
+2. 주문 row 기준 비관적 락의 MySQL 통합 테스트
 3. Toss 설정 외부화
 4. JPA schema 정합성
 5. Toss adapter MockWebServer 테스트

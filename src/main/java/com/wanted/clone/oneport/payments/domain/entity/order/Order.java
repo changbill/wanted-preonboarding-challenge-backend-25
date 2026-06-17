@@ -1,5 +1,6 @@
 package com.wanted.clone.oneport.payments.domain.entity.order;
 
+import com.wanted.clone.oneport.payments.domain.exception.PaymentRuleViolationException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

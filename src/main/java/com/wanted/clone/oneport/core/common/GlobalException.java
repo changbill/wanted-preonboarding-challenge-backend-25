@@ -3,6 +3,8 @@ package com.wanted.clone.oneport.core.common;
 import com.wanted.clone.oneport.payments.domain.exception.UnsupportedPgCorpException;
 import com.wanted.clone.oneport.payments.domain.exception.PaymentRuleViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -47,6 +49,13 @@ public class GlobalException extends ResponseEntityExceptionHandler {
     public final ErrorResponse handlePaymentRuleViolationException(PaymentRuleViolationException ex, WebRequest request) {
         logger.error("BAD_REQUEST ::: [PaymentRuleViolationException] ", ex);
         return new ErrorResponse(null, ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({CannotAcquireLockException.class, PessimisticLockingFailureException.class})
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public final ErrorResponse handleLockFailureException(RuntimeException ex, WebRequest request) {
+        logger.error("CONFLICT ::: [LockFailureException] ", ex);
+        return new ErrorResponse(null, "Payment order is locked. Please retry.", HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(IOException.class)

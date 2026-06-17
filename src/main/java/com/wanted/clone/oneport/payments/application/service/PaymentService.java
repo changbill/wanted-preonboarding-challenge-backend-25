@@ -52,7 +52,7 @@ public class PaymentService implements PaymentFullfillUseCase {
     @Override
     public String paymentApproved(ApprovePaymentCommand command) throws IOException {
         String orderId = command.getOrderId();
-        Order order = orderRepository.findById(orderId);
+        Order order = orderRepository.findByIdForUpdate(orderId);
         if (order.isPaidWith(command.getPaymentKey())) {
             return "success";
         }
@@ -62,6 +62,7 @@ public class PaymentService implements PaymentFullfillUseCase {
 
         if (paymentAPIs.isPaymentApproved(response.getStatus().name())) {
             order.orderPaymentFullFill(response.getTransactionId());
+            orderRepository.save(order);
             paymentLedgerRepository.save(response.toEntity(command.getSelectedPgCorp()));
 
             return "success";

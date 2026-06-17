@@ -41,14 +41,18 @@ com.wanted.clone.oneport
 
 ### 결제/취소 규칙
 
+- 결제 승인과 결제 취소는 주문 row를 비관적 쓰기 lock으로 조회한 뒤 처리한다.
 - 같은 주문과 같은 `paymentKey`의 결제 승인 재요청은 성공으로 반환한다.
 - 이미 결제된 주문에 다른 `paymentKey`로 승인 요청이 들어오면 `PaymentRuleViolationException`을 반환한다.
 - 이미 `DONE` 원장이 있는 `paymentKey` 승인 요청은 PG 호출 전에 거부한다.
+- 결제 승인 성공 시 주문 상태와 결제 원장을 저장한다.
+- 결제 취소 성공 시 주문 상태와 취소 원장을 저장한다.
 - 주문 결제 완료, 전체 취소, 부분 취소 상태 전이는 `Order` 도메인 메서드에서 처리한다.
 - 부분 취소 시 선택된 주문 상품만 `ORDER_CANCELLED`로 바꾸고 주문은 `ORDER_PARTIAL_CANCELLED`가 된다.
 - 모든 주문 상품이 취소되면 주문은 `ORDER_CANCELLED`가 된다.
 - 취소 가능 금액보다 큰 취소 요청은 `PaymentRuleViolationException`으로 거부한다.
 - 웹 계층은 `PaymentRuleViolationException`을 HTTP 400 `ErrorResponse`로 반환한다.
+- lock wait timeout/deadlock 등 lock 획득 실패는 HTTP 409 `ErrorResponse`로 반환한다.
 
 ### PG 선택
 
@@ -64,6 +68,7 @@ com.wanted.clone.oneport
 - `TossWidget`: `PgWidget`, `PgCorp.TOSS`
 - `TossPaymentAPIs`: Retrofit interface
 - MySQL persistence adapter와 JPA repository
+- `payment_ledger`는 `tx_id`, `method`, `payment_status` 조합으로 중복 원장 저장을 제한한다.
 
 ## 테스트
 
@@ -79,7 +84,8 @@ com.wanted.clone.oneport
 
 ## 제한
 
-- 주문/결제 동시성 제어가 없다.
+- 주문 row lock은 JPA `PESSIMISTIC_WRITE`로 적용되어 있으나 H2 테스트만으로 MySQL lock wait 동작을 완전히 검증하지는 못한다.
+- 외부 PG API 호출은 현재 트랜잭션 내부에서 수행되어 주문 row lock 보유 시간이 PG 응답 시간에 영향을 받는다.
 - Toss 설정이 외부화되어 있지 않다.
 - JPA schema 정합성 검증이 남아 있다.
 

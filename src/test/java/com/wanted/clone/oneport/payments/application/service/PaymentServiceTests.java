@@ -72,7 +72,7 @@ class PaymentServiceTests {
         order.orderPaymentFullFill("payment-key-1");
 
         OrderRepository orderRepository = mock(OrderRepository.class);
-        when(orderRepository.findById("order-1")).thenReturn(order);
+        when(orderRepository.findByIdForUpdate("order-1")).thenReturn(order);
 
         PaymentService paymentService = new PaymentService(
             Set.of(tossPayment),
@@ -97,7 +97,7 @@ class PaymentServiceTests {
         order.orderPaymentFullFill("payment-key-1");
 
         OrderRepository orderRepository = mock(OrderRepository.class);
-        when(orderRepository.findById("order-1")).thenReturn(order);
+        when(orderRepository.findByIdForUpdate("order-1")).thenReturn(order);
 
         PaymentService paymentService = new PaymentService(
             Set.of(tossPayment),
@@ -119,7 +119,7 @@ class PaymentServiceTests {
         when(tossPayment.provider()).thenReturn(PgCorp.TOSS);
 
         OrderRepository orderRepository = mock(OrderRepository.class);
-        when(orderRepository.findById("order-1"))
+        when(orderRepository.findByIdForUpdate("order-1"))
             .thenReturn(new Order("order-1", "buyer", "010", List.of()));
 
         PaymentLedgerRepository paymentLedgerRepository = mock(PaymentLedgerRepository.class);
@@ -156,7 +156,7 @@ class PaymentServiceTests {
         when(tossPayment.isPaymentApproved("DONE")).thenReturn(true);
 
         OrderRepository orderRepository = mock(OrderRepository.class);
-        when(orderRepository.findById("order-1"))
+        when(orderRepository.findByIdForUpdate("order-1"))
             .thenReturn(new Order("order-1", "buyer", "010", List.of()));
 
         PaymentLedgerRepository paymentLedgerRepository = mock(PaymentLedgerRepository.class);
@@ -172,6 +172,8 @@ class PaymentServiceTests {
         String result = paymentService.paymentApproved(approveCommand("order-1", "payment-key-1"));
 
         Assertions.assertEquals("success", result);
+        verify(orderRepository).findByIdForUpdate("order-1");
+        verify(orderRepository).save(any());
         verify(paymentLedgerRepository).save(any());
     }
 

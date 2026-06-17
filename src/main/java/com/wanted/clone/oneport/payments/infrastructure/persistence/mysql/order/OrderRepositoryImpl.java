@@ -23,6 +23,14 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    public Order findByIdForUpdate(String id) {
+        return jpaOrderRepository
+                .findByIdForUpdate(id)
+                .map(OrderPersistenceMapper::toDomain)
+                .orElseThrow(() -> new NoSuchElementException("OrderId not found"));
+    }
+
+    @Override
     public Order save(Order newOrder) {
         return OrderPersistenceMapper.toDomain(
                 jpaOrderRepository.save(OrderPersistenceMapper.toJpaEntity(newOrder))

@@ -5,6 +5,7 @@
 - `.\gradlew.bat compileTestJava`: PASS
 - `.\gradlew.bat test`: PASS
 - gradlew test: PASS
+- `.\gradlew.bat test`: PASS (도메인 상태 전이 테스트 보강 후 재검증)
 
 ## 추가 확인
 

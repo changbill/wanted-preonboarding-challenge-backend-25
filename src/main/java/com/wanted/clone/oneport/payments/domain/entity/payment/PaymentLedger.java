@@ -1,5 +1,6 @@
 package com.wanted.clone.oneport.payments.domain.entity.payment;
 
+import com.wanted.clone.oneport.payments.domain.exception.PaymentRuleViolationException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,5 +25,11 @@ public class PaymentLedger {
 
     public boolean isCancellableAmountGreaterThan(int cancellationAmount) {
         return balanceAmount >= cancellationAmount;
+    }
+
+    public void verifyCancellableAmount(int cancellationAmount) {
+        if (!isCancellableAmountGreaterThan(cancellationAmount)) {
+            throw PaymentRuleViolationException.insufficientCancellableAmount(cancellationAmount, balanceAmount);
+        }
     }
 }

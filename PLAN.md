@@ -37,25 +37,25 @@
 ## 4단계: JPA 엔티티와 도메인 모델 분리
 
 - [ ] `domain.entity` 패키지명을 `domain.model` 또는 `domain` 중심으로 재정리
-- [ ] `Order`, `OrderItem`, `PaymentLedger`, `CardPayment` 순수 도메인 모델 정의
-- [ ] `@Entity`, `@Table`, `@Column`, `@Convert` 등 JPA 어노테이션을 persistence entity로 이동
-- [ ] `infrastructure.persistence.mysql.entity` 패키지에 JPA entity 정의
-- [ ] 도메인 모델과 JPA entity 간 mapper 추가
-- [ ] repository adapter에서 JPA entity 조회 후 도메인 모델로 변환
-- [ ] repository adapter에서 도메인 모델 저장 전 JPA entity로 변환
-- [ ] 도메인 모델이 JPA, Spring, Toss, web 타입을 참조하지 않도록 정리
-- [ ] JPA entity는 상태 전이 규칙 없이 persistence 매핑 책임만 가지도록 정리
-- [ ] 분리 후 도메인 상태 전이 단위 테스트 추가
+- [x] `Order`, `OrderItem`, `PaymentLedger`, `CardPayment` 순수 도메인 모델 정의
+- [x] `@Entity`, `@Table`, `@Column`, `@Convert` 등 JPA 어노테이션을 persistence entity로 이동
+- [x] `infrastructure.persistence.mysql.entity` 패키지에 JPA entity 정의
+- [x] 도메인 모델과 JPA entity 간 mapper 추가
+- [x] repository adapter에서 JPA entity 조회 후 도메인 모델로 변환
+- [x] repository adapter에서 도메인 모델 저장 전 JPA entity로 변환
+- [x] 도메인 모델이 JPA, Spring, Toss, web 타입을 참조하지 않도록 정리
+- [x] JPA entity는 상태 전이 규칙 없이 persistence 매핑 책임만 가지도록 정리
+- [x] 분리 후 도메인 상태 전이 단위 테스트 추가
 
 ## 5단계: 결제/취소 락 적용
 
-- [ ] `OrderRepository` lock 조회 포트 추가
-- [ ] `JpaOrderRepository.findByIdForUpdate` 비관적 쓰기 락 추가
-- [ ] 결제 승인 유스케이스에서 주문 row lock 적용
-- [ ] 결제 취소 유스케이스에서 주문 row lock 적용
-- [ ] 외부 PG API 호출 전 `PAYMENT_APPROVING` 진행 상태 선점 방식 검토
-- [ ] lock wait timeout/deadlock 예외 처리 정책 정의
-- [ ] 결제 원장 unique constraint 추가
+- [x] `OrderRepository` lock 조회 포트 추가
+- [x] `JpaOrderRepository.findByIdForUpdate` 비관적 쓰기 락 추가
+- [x] 결제 승인 유스케이스에서 주문 row lock 적용
+- [x] 결제 취소 유스케이스에서 주문 row lock 적용
+- [x] 외부 PG API 호출 전 `PAYMENT_APPROVING` 진행 상태 선점 방식 검토
+- [x] lock wait timeout/deadlock 예외 처리 정책 정의
+- [x] 결제 원장 unique constraint 추가
 
 ## 6단계: 설정과 외부 연동 정리
 
@@ -82,20 +82,3 @@
 - [ ] 상태 전이 도메인 테스트 추가
 - [ ] ArchUnit 의존 규칙 강화
 - [ ] REST Docs/OpenAPI 생성 테스트 정리
-
-## phase-04 완료 기록: JPA 엔티티와 도메인 모델 분리
-
-- [x] `Order`, `OrderItem`, `PurchaseOrderId`, `PaymentLedger`, `CardPayment`, `TransactionType`에서 JPA 어노테이션과 persistence import 제거
-- [x] `infrastructure.persistence.mysql.entity` 하위에 주문, 주문상품, 결제 원장, 카드 결제 JPA 엔티티 추가
-- [x] JPA converter를 persistence 패키지로 이동하고 기존 domain converter 제거
-- [x] 도메인 모델과 JPA 엔티티 간 `OrderPersistenceMapper`, `PaymentPersistenceMapper` 추가
-- [x] repository adapter에서 조회 결과를 도메인 모델로 변환하고 저장 입력을 JPA 엔티티로 변환
-- [x] JPA repository slice 테스트를 persistence entity 기준으로 조정
-- [x] 도메인 JPA 의존 금지 ArchUnit 테스트 추가
-- [x] 도메인-JPA mapper 왕복 단위 테스트 추가
-- [x] `.\gradlew.bat test` 통과
-
-남은 위험:
-
-- `PaymentSettlements`는 phase-04 핵심 대상 밖이라 아직 JPA entity 형태로 domain 패키지에 남아 있다.
-- `domain.entity` 패키지명 자체는 기존 호출부 호환을 위해 유지했다. 전체 `domain.model` 재배치는 별도 범위로 다룬다.
