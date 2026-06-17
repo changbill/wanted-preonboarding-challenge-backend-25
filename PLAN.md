@@ -37,14 +37,14 @@
 ## 4단계: JPA 엔티티와 도메인 모델 분리
 
 - [ ] `domain.entity` 패키지명을 `domain.model` 또는 `domain` 중심으로 재정리
-- [ ] `Order`, `OrderItem`, `PaymentLedger`, `CardPayment` 순수 도메인 모델 정의
-- [ ] `@Entity`, `@Table`, `@Column`, `@Convert` 등 JPA 어노테이션을 persistence entity로 이동
-- [ ] `infrastructure.persistence.mysql.entity` 패키지에 JPA entity 정의
-- [ ] 도메인 모델과 JPA entity 간 mapper 추가
-- [ ] repository adapter에서 JPA entity 조회 후 도메인 모델로 변환
-- [ ] repository adapter에서 도메인 모델 저장 전 JPA entity로 변환
-- [ ] 도메인 모델이 JPA, Spring, Toss, web 타입을 참조하지 않도록 정리
-- [ ] JPA entity는 상태 전이 규칙 없이 persistence 매핑 책임만 가지도록 정리
+- [x] `Order`, `OrderItem`, `PaymentLedger`, `CardPayment` 순수 도메인 모델 정의
+- [x] `@Entity`, `@Table`, `@Column`, `@Convert` 등 JPA 어노테이션을 persistence entity로 이동
+- [x] `infrastructure.persistence.mysql.entity` 패키지에 JPA entity 정의
+- [x] 도메인 모델과 JPA entity 간 mapper 추가
+- [x] repository adapter에서 JPA entity 조회 후 도메인 모델로 변환
+- [x] repository adapter에서 도메인 모델 저장 전 JPA entity로 변환
+- [x] 도메인 모델이 JPA, Spring, Toss, web 타입을 참조하지 않도록 정리
+- [x] JPA entity는 상태 전이 규칙 없이 persistence 매핑 책임만 가지도록 정리
 - [ ] 분리 후 도메인 상태 전이 단위 테스트 추가
 
 ## 5단계: 결제/취소 락 적용
@@ -82,37 +82,3 @@
 - [ ] 상태 전이 도메인 테스트 추가
 - [ ] ArchUnit 의존 규칙 강화
 - [ ] REST Docs/OpenAPI 생성 테스트 정리
-
-## phase-04 완료 기록: JPA 엔티티와 도메인 모델 분리
-
-- [x] `Order`, `OrderItem`, `PurchaseOrderId`, `PaymentLedger`, `CardPayment`, `TransactionType`에서 JPA 어노테이션과 persistence import 제거
-- [x] `infrastructure.persistence.mysql.entity` 하위에 주문, 주문상품, 결제 원장, 카드 결제 JPA 엔티티 추가
-- [x] JPA converter를 persistence 패키지로 이동하고 기존 domain converter 제거
-- [x] 도메인 모델과 JPA 엔티티 간 `OrderPersistenceMapper`, `PaymentPersistenceMapper` 추가
-- [x] repository adapter에서 조회 결과를 도메인 모델로 변환하고 저장 입력을 JPA 엔티티로 변환
-- [x] JPA repository slice 테스트를 persistence entity 기준으로 조정
-- [x] 도메인 JPA 의존 금지 ArchUnit 테스트 추가
-- [x] 도메인-JPA mapper 왕복 단위 테스트 추가
-- [x] `.\gradlew.bat test` 통과
-
-남은 위험:
-
-- `PaymentSettlements`는 phase-04 핵심 대상 밖이라 아직 JPA entity 형태로 domain 패키지에 남아 있다.
-- `domain.entity` 패키지명 자체는 기존 호출부 호환을 위해 유지했다. 전체 `domain.model` 재배치는 별도 범위로 다룬다.
-
-## phase-05 완료 기록: 결제/취소 락 적용
-
-- [x] `OrderRepository.findByIdForUpdate(String)` 포트를 추가하고 JPA adapter에 연결
-- [x] `JpaOrderRepository.findByIdForUpdate`에 `PESSIMISTIC_WRITE` lock 적용
-- [x] 결제 승인 유스케이스가 주문을 lock 조회하고 승인 성공 시 주문 상태를 저장하도록 변경
-- [x] 결제 취소 유스케이스가 주문을 lock 조회하고 취소 성공 시 주문 상태를 저장하도록 변경
-- [x] 현재 주문 상태 모델에 `PAYMENT_APPROVING` 진행 상태가 없어 별도 선점 상태 도입은 보류
-- [x] lock wait timeout/deadlock 계열 예외를 HTTP 409 `ErrorResponse`로 변환
-- [x] 결제 원장 중복 방지를 위해 `tx_id`, `method`, `payment_status` unique constraint 추가
-- [x] 승인/취소 서비스 단위 테스트에 lock 조회와 주문 저장 검증 추가
-- [x] `.\gradlew.bat test` 통과
-
-남은 위험:
-
-- H2 기반 테스트는 SQL lock wait 동작을 MySQL과 동일하게 보장하지 않는다. 실제 lock 대기/timeout 재현 테스트는 MySQL 통합 테스트 환경에서 보강해야 한다.
-- 외부 PG API 호출을 트랜잭션 안에서 수행하므로 주문 row lock 보유 시간이 PG 응답 시간에 영향을 받는다. 별도 진행 상태 선점 모델은 주문 상태 설계가 확장될 때 다시 검토한다.
